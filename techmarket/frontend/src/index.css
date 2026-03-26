@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', system-ui, sans-serif; background: #fafafa; color: #171717; -webkit-font-smoothing: antialiased; }
+h1,h2,h3,h4,h5,h6 { font-family: 'Outfit', system-ui, sans-serif; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 3px; }
+
+/* Animations */
+@keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+@keyframes scaleIn { from { opacity:0; transform:scale(.95); } to { opacity:1; transform:scale(1); } }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+.animate-fade-up { animation: fadeInUp .6s cubic-bezier(.22,1,.36,1) forwards; }
+.animate-scale-in { animation: scaleIn .4s cubic-bezier(.22,1,.36,1) forwards; }
+.stagger-1 { animation-delay: .1s; opacity: 0; }
+.stagger-2 { animation-delay: .2s; opacity: 0; }
+.stagger-3 { animation-delay: .3s; opacity: 0; }
+.stagger-4 { animation-delay: .4s; opacity: 0; }
+
+/* Product card hover */
+.product-card { transition: all .3s cubic-bezier(.22,1,.36,1); }
+.product-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px -15px rgba(0,0,0,.12); }
+.product-card:hover .product-img { transform: scale(1.05); }
+.product-img { transition: transform .5s cubic-bezier(.22,1,.36,1); }
+
+/* Button effects */
+.btn-primary { @apply bg-brand-600 text-white font-semibold rounded-2xl transition-all duration-300 hover:bg-brand-700 hover:shadow-lg hover:shadow-brand-500/25 active:scale-[.97]; }
+.btn-outline { @apply border-2 border-neutral-200 text-neutral-800 font-semibold rounded-2xl transition-all duration-300 hover:border-brand-500 hover:text-brand-600 active:scale-[.97]; }
+
+/* Glass effect */
+.glass-card { @apply bg-white/80 backdrop-blur-xl border border-neutral-200/60 rounded-3xl shadow-sm; }
+
+/* Gradient mesh background */
+.mesh-gradient {
+  background-color: #f0f4ff;
+  background-image: radial-gradient(at 40% 20%, #dbeafe 0px, transparent 50%), radial-gradient(at 80% 0%, #ede9fe 0px, transparent 50%), radial-gradient(at 0% 50%, #fae8ff 0px, transparent 50%), radial-gradient(at 80% 50%, #dbeafe 0px, transparent 50%), radial-gradient(at 0% 100%, #fdf4ff 0px, transparent 50%);
+}
+
+/* Noise texture overlay */
+.noise::before {
+  content: ''; position: absolute; inset: 0; opacity: .03; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(90deg, #e5e5e5 25%, #f5f5f5 50%, #e5e5e5 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}

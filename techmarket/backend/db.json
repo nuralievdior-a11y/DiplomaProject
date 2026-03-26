@@ -1,0 +1,1189 @@
+{
+  "users": [
+    {
+      "id": "usr_001",
+      "firstName": "Admin",
+      "lastName": "TechMarket",
+      "email": "admin@techmarket.com",
+      "password": "$2a$10$DXjwjgJ/oYuCrPQfMWi2yOQtGeIQgKs.6xbdQTnRvp2Chs9z/TadS",
+      "role": "admin",
+      "phone": "+998901234567",
+      "avatar": "",
+      "addresses": [],
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "isActive": true
+    },
+    {
+      "id": "usr_002",
+      "firstName": "Diyorbek",
+      "lastName": "Nuraliev",
+      "email": "diyor@example.com",
+      "password": "$2a$10$tfSSWjkyNcTZVUgQhx0Yu.WXMiIJ8FkHrEvS2BqpDfF7W12WYfzre",
+      "role": "customer",
+      "phone": "+998907654321",
+      "avatar": "",
+      "addresses": [
+        {
+          "id": "addr_001",
+          "label": "Home",
+          "street": "Amir Temur ko'chasi 108",
+          "city": "Tashkent",
+          "state": "Tashkent",
+          "zipCode": "100000",
+          "country": "Uzbekistan",
+          "isDefault": true
+        }
+      ],
+      "createdAt": "2025-01-15T10:30:00.000Z",
+      "isActive": true
+    },
+    {
+      "id": "usr_003",
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "password": "$2a$10$Z.pUDL6tYRVvOhG8.rw0FOFUKHeaVzvmb0/VMpmKyHnBpgS.JwXUO",
+      "role": "customer",
+      "phone": "+1234567890",
+      "avatar": "",
+      "addresses": [
+        {
+          "id": "addr_002",
+          "label": "Home",
+          "street": "123 Main Street",
+          "city": "New York",
+          "state": "NY",
+          "zipCode": "10001",
+          "country": "USA",
+          "isDefault": true
+        }
+      ],
+      "createdAt": "2025-02-01T08:00:00.000Z",
+      "isActive": true
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat_001",
+      "name": "Smartphones",
+      "slug": "smartphones",
+      "description": "Latest smartphones from top brands",
+      "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400",
+      "icon": "smartphone",
+      "parentId": null,
+      "isActive": true,
+      "order": 1
+    },
+    {
+      "id": "cat_002",
+      "name": "Laptops",
+      "slug": "laptops",
+      "description": "High-performance laptops for work and gaming",
+      "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400",
+      "icon": "laptop",
+      "parentId": null,
+      "isActive": true,
+      "order": 2
+    },
+    {
+      "id": "cat_003",
+      "name": "Tablets",
+      "slug": "tablets",
+      "description": "Tablets for entertainment and productivity",
+      "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400",
+      "icon": "tablet",
+      "parentId": null,
+      "isActive": true,
+      "order": 3
+    },
+    {
+      "id": "cat_004",
+      "name": "Headphones",
+      "slug": "headphones",
+      "description": "Premium audio headphones and earbuds",
+      "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
+      "icon": "headphones",
+      "parentId": null,
+      "isActive": true,
+      "order": 4
+    },
+    {
+      "id": "cat_005",
+      "name": "Smartwatches",
+      "slug": "smartwatches",
+      "description": "Smart wearable devices",
+      "image": "https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=400",
+      "icon": "watch",
+      "parentId": null,
+      "isActive": true,
+      "order": 5
+    },
+    {
+      "id": "cat_006",
+      "name": "Cameras",
+      "slug": "cameras",
+      "description": "Digital cameras and accessories",
+      "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400",
+      "icon": "camera",
+      "parentId": null,
+      "isActive": true,
+      "order": 6
+    },
+    {
+      "id": "cat_007",
+      "name": "Gaming",
+      "slug": "gaming",
+      "description": "Gaming consoles and accessories",
+      "image": "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=400",
+      "icon": "gamepad",
+      "parentId": null,
+      "isActive": true,
+      "order": 7
+    },
+    {
+      "id": "cat_008",
+      "name": "Accessories",
+      "slug": "accessories",
+      "description": "Tech accessories and peripherals",
+      "image": "https://images.unsplash.com/photo-1625842268584-8f3296236bf7?w=400",
+      "icon": "cable",
+      "parentId": null,
+      "isActive": true,
+      "order": 8
+    }
+  ],
+  "products": [
+    {
+      "id": "prod_001",
+      "name": "iPhone 15 Pro Max",
+      "slug": "iphone-15-pro-max",
+      "description": "The most advanced iPhone ever with A17 Pro chip, titanium design, and 48MP camera system. Features USB-C, Action Button, and up to 29 hours of video playback.",
+      "shortDescription": "A17 Pro chip, 48MP camera, titanium design",
+      "price": 1199.99,
+      "comparePrice": 1299.99,
+      "categoryId": "cat_001",
+      "brand": "Apple",
+      "sku": "APL-IP15PM-256",
+      "stock": 45,
+      "images": [
+        "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600",
+        "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600"
+      ],
+      "specifications": {
+        "Display": "6.7-inch Super Retina XDR OLED",
+        "Processor": "A17 Pro",
+        "RAM": "8GB",
+        "Storage": "256GB",
+        "Camera": "48MP + 12MP + 12MP",
+        "Battery": "4422 mAh",
+        "OS": "iOS 17"
+      },
+      "features": [
+        "5G",
+        "Face ID",
+        "USB-C",
+        "Titanium Frame",
+        "Action Button"
+      ],
+      "rating": 4.8,
+      "reviewCount": 234,
+      "isFeatured": true,
+      "isNew": true,
+      "isActive": true,
+      "createdAt": "2025-01-10T00:00:00.000Z"
+    },
+    {
+      "id": "prod_002",
+      "name": "Samsung Galaxy S24 Ultra",
+      "slug": "samsung-galaxy-s24-ultra",
+      "description": "Galaxy AI is here. The most powerful Galaxy smartphone with built-in AI, 200MP camera, and S Pen included. Titanium frame with 6.8-inch QHD+ display.",
+      "shortDescription": "Galaxy AI, 200MP camera, S Pen included",
+      "price": 1099.99,
+      "comparePrice": 1199.99,
+      "categoryId": "cat_001",
+      "brand": "Samsung",
+      "sku": "SAM-GS24U-256",
+      "stock": 38,
+      "images": [
+        "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=600",
+        "https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=600"
+      ],
+      "specifications": {
+        "Display": "6.8-inch Dynamic AMOLED 2X",
+        "Processor": "Snapdragon 8 Gen 3",
+        "RAM": "12GB",
+        "Storage": "256GB",
+        "Camera": "200MP + 12MP + 50MP + 10MP",
+        "Battery": "5000 mAh",
+        "OS": "Android 14"
+      },
+      "features": [
+        "Galaxy AI",
+        "S Pen",
+        "5G",
+        "Titanium Frame",
+        "100x Space Zoom"
+      ],
+      "rating": 4.7,
+      "reviewCount": 189,
+      "isFeatured": true,
+      "isNew": true,
+      "isActive": true,
+      "createdAt": "2025-01-12T00:00:00.000Z"
+    },
+    {
+      "id": "prod_003",
+      "name": "MacBook Pro 16-inch M3 Max",
+      "slug": "macbook-pro-16-m3-max",
+      "description": "The most powerful MacBook Pro ever. M3 Max chip delivers exceptional performance for demanding pro workflows with up to 22 hours battery.",
+      "shortDescription": "M3 Max chip, 16-inch Liquid Retina XDR",
+      "price": 2499.99,
+      "comparePrice": 2799.99,
+      "categoryId": "cat_002",
+      "brand": "Apple",
+      "sku": "APL-MBP16-M3M",
+      "stock": 22,
+      "images": [
+        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600",
+        "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=600"
+      ],
+      "specifications": {
+        "Display": "16.2-inch Liquid Retina XDR",
+        "Processor": "Apple M3 Max",
+        "RAM": "36GB Unified",
+        "Storage": "1TB SSD",
+        "GPU": "40-core",
+        "Battery": "Up to 22 hours"
+      },
+      "features": [
+        "M3 Max Chip",
+        "Liquid Retina XDR",
+        "MagSafe",
+        "Wi-Fi 6E",
+        "Thunderbolt 4"
+      ],
+      "rating": 4.9,
+      "reviewCount": 156,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-05T00:00:00.000Z"
+    },
+    {
+      "id": "prod_004",
+      "name": "Dell XPS 15",
+      "slug": "dell-xps-15",
+      "description": "Premium ultrabook with stunning 15.6-inch OLED InfinityEdge display, Intel Core i9, and NVIDIA RTX 4070 graphics.",
+      "shortDescription": "Intel i9, RTX 4070, 15.6-inch OLED",
+      "price": 1899.99,
+      "comparePrice": 2099.99,
+      "categoryId": "cat_002",
+      "brand": "Dell",
+      "sku": "DEL-XPS15-I9",
+      "stock": 15,
+      "images": [
+        "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600",
+        "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600"
+      ],
+      "specifications": {
+        "Display": "15.6-inch 3.5K OLED",
+        "Processor": "Intel Core i9-13900H",
+        "RAM": "32GB DDR5",
+        "Storage": "1TB SSD",
+        "GPU": "NVIDIA RTX 4070",
+        "Battery": "Up to 13 hours"
+      },
+      "features": [
+        "OLED Display",
+        "Thunderbolt 4",
+        "Wi-Fi 6E",
+        "Fingerprint Reader"
+      ],
+      "rating": 4.6,
+      "reviewCount": 98,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-08T00:00:00.000Z"
+    },
+    {
+      "id": "prod_005",
+      "name": "iPad Pro 12.9-inch M2",
+      "slug": "ipad-pro-129-m2",
+      "description": "Supercharged by the M2 chip with advanced Liquid Retina XDR display, ProMotion, and Apple Pencil hover.",
+      "shortDescription": "M2 chip, 12.9-inch Liquid Retina XDR",
+      "price": 1099.99,
+      "comparePrice": 1199.99,
+      "categoryId": "cat_003",
+      "brand": "Apple",
+      "sku": "APL-IPDP-M2",
+      "stock": 30,
+      "images": [
+        "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600",
+        "https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=600"
+      ],
+      "specifications": {
+        "Display": "12.9-inch Liquid Retina XDR",
+        "Processor": "Apple M2",
+        "RAM": "8GB",
+        "Storage": "256GB",
+        "Camera": "12MP + 10MP Ultra Wide",
+        "Battery": "Up to 10 hours"
+      },
+      "features": [
+        "Apple Pencil support",
+        "Face ID",
+        "Thunderbolt",
+        "LiDAR Scanner"
+      ],
+      "rating": 4.7,
+      "reviewCount": 112,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-15T00:00:00.000Z"
+    },
+    {
+      "id": "prod_006",
+      "name": "Sony WH-1000XM5",
+      "slug": "sony-wh-1000xm5",
+      "description": "Industry-leading noise canceling headphones with exceptional sound quality and 30-hour battery life.",
+      "shortDescription": "Best-in-class ANC, 30h battery",
+      "price": 349.99,
+      "comparePrice": 399.99,
+      "categoryId": "cat_004",
+      "brand": "Sony",
+      "sku": "SNY-WH1KXM5",
+      "stock": 65,
+      "images": [
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600",
+        "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600"
+      ],
+      "specifications": {
+        "Driver": "30mm",
+        "Battery": "30 hours",
+        "Noise Canceling": "Yes, Auto NC Optimizer",
+        "Bluetooth": "5.2",
+        "Weight": "250g",
+        "Codec": "LDAC, AAC, SBC"
+      },
+      "features": [
+        "Auto NC Optimizer",
+        "Speak-to-Chat",
+        "Multipoint",
+        "LDAC",
+        "Wear Detection"
+      ],
+      "rating": 4.8,
+      "reviewCount": 320,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-03T00:00:00.000Z"
+    },
+    {
+      "id": "prod_007",
+      "name": "AirPods Pro 2nd Gen",
+      "slug": "airpods-pro-2",
+      "description": "Rebuilt from the ground up with Apple H2 chip for smarter noise cancellation and immersive Adaptive Audio.",
+      "shortDescription": "H2 chip, Active Noise Cancellation, USB-C",
+      "price": 249.99,
+      "comparePrice": 279.99,
+      "categoryId": "cat_004",
+      "brand": "Apple",
+      "sku": "APL-APP2-USBC",
+      "stock": 80,
+      "images": [
+        "https://images.unsplash.com/photo-1606220838315-056192d5e927?w=600",
+        "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600"
+      ],
+      "specifications": {
+        "Chip": "Apple H2",
+        "ANC": "Active Noise Cancellation",
+        "Battery": "6h (30h with case)",
+        "Water Resistance": "IPX4",
+        "Bluetooth": "5.3"
+      },
+      "features": [
+        "Adaptive Transparency",
+        "Personalized Spatial Audio",
+        "Conversation Awareness",
+        "USB-C"
+      ],
+      "rating": 4.7,
+      "reviewCount": 445,
+      "isFeatured": false,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-06T00:00:00.000Z"
+    },
+    {
+      "id": "prod_008",
+      "name": "Apple Watch Ultra 2",
+      "slug": "apple-watch-ultra-2",
+      "description": "The most rugged and capable Apple Watch with S9 SiP chip, precision dual-frequency GPS, and 36-hour battery.",
+      "shortDescription": "S9 chip, titanium case, 36h battery",
+      "price": 799.99,
+      "comparePrice": 849.99,
+      "categoryId": "cat_005",
+      "brand": "Apple",
+      "sku": "APL-AWU2-49",
+      "stock": 25,
+      "images": [
+        "https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=600",
+        "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600"
+      ],
+      "specifications": {
+        "Display": "49mm Always-On Retina",
+        "Chip": "Apple S9 SiP",
+        "Case": "Titanium",
+        "Battery": "Up to 36 hours",
+        "Water Resistance": "100m"
+      },
+      "features": [
+        "Double Tap",
+        "Depth Gauge",
+        "Siren",
+        "Action Button",
+        "Crash Detection"
+      ],
+      "rating": 4.6,
+      "reviewCount": 87,
+      "isFeatured": false,
+      "isNew": true,
+      "isActive": true,
+      "createdAt": "2025-01-20T00:00:00.000Z"
+    },
+    {
+      "id": "prod_009",
+      "name": "Sony Alpha A7 IV",
+      "slug": "sony-alpha-a7-iv",
+      "description": "Full-frame mirrorless camera with 33MP sensor, 4K 60p video, and advanced real-time autofocus system.",
+      "shortDescription": "33MP full-frame, 4K 60p, Real-time tracking",
+      "price": 2499.99,
+      "comparePrice": 2699.99,
+      "categoryId": "cat_006",
+      "brand": "Sony",
+      "sku": "SNY-A7IV-BODY",
+      "stock": 12,
+      "images": [
+        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600",
+        "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600"
+      ],
+      "specifications": {
+        "Sensor": "33MP Full-Frame CMOS",
+        "Video": "4K 60p, 10-bit 4:2:2",
+        "AF Points": "759 phase-detection",
+        "Stabilization": "5-axis IBIS",
+        "Weight": "658g"
+      },
+      "features": [
+        "Real-time Eye AF",
+        "10fps Burst",
+        "Dual Card Slots",
+        "USB-C PD",
+        "Weather Sealed"
+      ],
+      "rating": 4.8,
+      "reviewCount": 67,
+      "isFeatured": false,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-04T00:00:00.000Z"
+    },
+    {
+      "id": "prod_010",
+      "name": "PlayStation 5 Slim",
+      "slug": "playstation-5-slim",
+      "description": "Experience lightning-fast loading, deeper immersion with haptic feedback, adaptive triggers, and stunning 4K gaming.",
+      "shortDescription": "Slim design, 1TB SSD, DualSense controller",
+      "price": 449.99,
+      "comparePrice": 499.99,
+      "categoryId": "cat_007",
+      "brand": "Sony",
+      "sku": "SNY-PS5S-1TB",
+      "stock": 50,
+      "images": [
+        "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600",
+        "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600"
+      ],
+      "specifications": {
+        "CPU": "AMD Zen 2, 8-core 3.5GHz",
+        "GPU": "AMD RDNA 2, 10.28 TFLOPS",
+        "RAM": "16GB GDDR6",
+        "Storage": "1TB Custom SSD",
+        "Output": "4K 120Hz, 8K"
+      },
+      "features": [
+        "DualSense Controller",
+        "Ray Tracing",
+        "Tempest 3D Audio",
+        "Backward Compatible"
+      ],
+      "rating": 4.9,
+      "reviewCount": 523,
+      "isFeatured": true,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-02T00:00:00.000Z"
+    },
+    {
+      "id": "prod_011",
+      "name": "Nintendo Switch OLED",
+      "slug": "nintendo-switch-oled",
+      "description": "Vibrant 7-inch OLED screen, wide adjustable stand, enhanced audio, and 64GB internal storage.",
+      "shortDescription": "7-inch OLED display, 64GB, enhanced audio",
+      "price": 349.99,
+      "comparePrice": 379.99,
+      "categoryId": "cat_007",
+      "brand": "Nintendo",
+      "sku": "NTD-SWOL-64",
+      "stock": 40,
+      "images": [
+        "https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=600",
+        "https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=600"
+      ],
+      "specifications": {
+        "Display": "7-inch OLED",
+        "Storage": "64GB",
+        "Battery": "4.5-9 hours",
+        "Resolution": "1280x720 / 1920x1080 docked"
+      },
+      "features": [
+        "OLED Display",
+        "Tabletop Mode",
+        "Wide Stand",
+        "LAN Port"
+      ],
+      "rating": 4.7,
+      "reviewCount": 298,
+      "isFeatured": false,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-07T00:00:00.000Z"
+    },
+    {
+      "id": "prod_012",
+      "name": "Google Pixel 8 Pro",
+      "slug": "google-pixel-8-pro",
+      "description": "The best of Google AI with Magic Eraser, Photo Unblur, and 7 years of OS and security updates.",
+      "shortDescription": "Tensor G3, 50MP camera, 7 years updates",
+      "price": 899.99,
+      "comparePrice": 999.99,
+      "categoryId": "cat_001",
+      "brand": "Google",
+      "sku": "GGL-PX8P-128",
+      "stock": 32,
+      "images": [
+        "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600",
+        "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600"
+      ],
+      "specifications": {
+        "Display": "6.7-inch LTPO OLED, 120Hz",
+        "Processor": "Google Tensor G3",
+        "RAM": "12GB",
+        "Storage": "128GB",
+        "Camera": "50MP + 48MP + 48MP",
+        "Battery": "5050 mAh"
+      },
+      "features": [
+        "Magic Eraser",
+        "Photo Unblur",
+        "Best Take",
+        "Audio Magic Eraser",
+        "7 Years Updates"
+      ],
+      "rating": 4.5,
+      "reviewCount": 167,
+      "isFeatured": false,
+      "isNew": true,
+      "isActive": true,
+      "createdAt": "2025-01-18T00:00:00.000Z"
+    },
+    {
+      "id": "prod_013",
+      "name": "Samsung Galaxy Tab S9 Ultra",
+      "slug": "samsung-galaxy-tab-s9-ultra",
+      "description": "The biggest Galaxy Tab with 14.6-inch Dynamic AMOLED 2X display, Snapdragon 8 Gen 2, and S Pen included.",
+      "shortDescription": "14.6-inch AMOLED, Snapdragon 8 Gen 2, S Pen",
+      "price": 1199.99,
+      "comparePrice": 1299.99,
+      "categoryId": "cat_003",
+      "brand": "Samsung",
+      "sku": "SAM-GTS9U-256",
+      "stock": 18,
+      "images": [
+        "https://images.unsplash.com/photo-1561154464-82e9adf32764?w=600",
+        "https://images.unsplash.com/photo-1632634515648-cf2db00f06af?w=600"
+      ],
+      "specifications": {
+        "Display": "14.6-inch Dynamic AMOLED 2X",
+        "Processor": "Snapdragon 8 Gen 2",
+        "RAM": "12GB",
+        "Storage": "256GB",
+        "Battery": "11200 mAh"
+      },
+      "features": [
+        "S Pen Included",
+        "IP68",
+        "DeX Mode",
+        "Multi Window"
+      ],
+      "rating": 4.6,
+      "reviewCount": 89,
+      "isFeatured": false,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-09T00:00:00.000Z"
+    },
+    {
+      "id": "prod_014",
+      "name": "Bose QuietComfort Ultra",
+      "slug": "bose-quietcomfort-ultra",
+      "description": "World-class noise cancellation with immersive Spatial Audio and CustomTune technology.",
+      "shortDescription": "World-class ANC, Immersive Audio, CustomTune",
+      "price": 429.99,
+      "comparePrice": 449.99,
+      "categoryId": "cat_004",
+      "brand": "Bose",
+      "sku": "BSE-QCUL-BLK",
+      "stock": 42,
+      "images": [
+        "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600",
+        "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600"
+      ],
+      "specifications": {
+        "Driver": "35mm Triport",
+        "Battery": "24 hours",
+        "Bluetooth": "5.3",
+        "Weight": "250g"
+      },
+      "features": [
+        "CustomTune",
+        "Immersive Audio",
+        "Aware Mode",
+        "Multipoint",
+        "Wind Block"
+      ],
+      "rating": 4.7,
+      "reviewCount": 198,
+      "isFeatured": false,
+      "isNew": true,
+      "isActive": true,
+      "createdAt": "2025-01-25T00:00:00.000Z"
+    },
+    {
+      "id": "prod_015",
+      "name": "ASUS ROG Strix G16",
+      "slug": "asus-rog-strix-g16",
+      "description": "Gaming laptop with Intel Core i9, RTX 4070, 16-inch QHD 240Hz display for ultimate gaming performance.",
+      "shortDescription": "i9-13980HX, RTX 4070, 240Hz QHD",
+      "price": 1799.99,
+      "comparePrice": 1999.99,
+      "categoryId": "cat_002",
+      "brand": "ASUS",
+      "sku": "ASU-ROGG16-I9",
+      "stock": 15,
+      "images": [
+        "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600",
+        "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600"
+      ],
+      "specifications": {
+        "Display": "16-inch QHD 240Hz",
+        "Processor": "Intel Core i9-13980HX",
+        "RAM": "32GB DDR5",
+        "Storage": "1TB NVMe SSD",
+        "GPU": "NVIDIA RTX 4070 8GB"
+      },
+      "features": [
+        "MUX Switch",
+        "Dolby Atmos",
+        "Per-Key RGB",
+        "Wi-Fi 6E",
+        "240Hz Display"
+      ],
+      "rating": 4.5,
+      "reviewCount": 76,
+      "isFeatured": false,
+      "isNew": true,
+      "isActive": true,
+      "createdAt": "2025-01-22T00:00:00.000Z"
+    },
+    {
+      "id": "prod_016",
+      "name": "Xbox Series X",
+      "slug": "xbox-series-x",
+      "description": "The fastest, most powerful Xbox ever with 12 teraflops of processing power and true 4K gaming.",
+      "shortDescription": "12 TFLOPS, 4K 120fps, 1TB SSD",
+      "price": 499.99,
+      "comparePrice": 549.99,
+      "categoryId": "cat_007",
+      "brand": "Microsoft",
+      "sku": "MSF-XSX-1TB",
+      "stock": 28,
+      "images": [
+        "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?w=600",
+        "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600"
+      ],
+      "specifications": {
+        "CPU": "AMD Zen 2, 8-core 3.8GHz",
+        "GPU": "12 TFLOPS RDNA 2",
+        "RAM": "16GB GDDR6",
+        "Storage": "1TB NVMe SSD",
+        "Output": "4K 120fps, 8K"
+      },
+      "features": [
+        "Quick Resume",
+        "Smart Delivery",
+        "Game Pass",
+        "Backward Compatible",
+        "Ray Tracing"
+      ],
+      "rating": 4.7,
+      "reviewCount": 389,
+      "isFeatured": false,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-16T00:00:00.000Z"
+    },
+    {
+      "id": "prod_017",
+      "name": "Samsung Galaxy Watch 6 Classic",
+      "slug": "samsung-galaxy-watch-6-classic",
+      "description": "Classic rotating bezel design with advanced health monitoring and Wear OS powered by Samsung.",
+      "shortDescription": "Rotating bezel, health monitoring, Wear OS",
+      "price": 399.99,
+      "comparePrice": 449.99,
+      "categoryId": "cat_005",
+      "brand": "Samsung",
+      "sku": "SAM-GW6C-47",
+      "stock": 35,
+      "images": [
+        "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600",
+        "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600"
+      ],
+      "specifications": {
+        "Display": "1.5-inch Super AMOLED",
+        "Processor": "Exynos W930",
+        "Storage": "16GB",
+        "Battery": "425 mAh",
+        "OS": "Wear OS 4"
+      },
+      "features": [
+        "Rotating Bezel",
+        "BioActive Sensor",
+        "Sleep Tracking",
+        "Body Composition"
+      ],
+      "rating": 4.4,
+      "reviewCount": 134,
+      "isFeatured": false,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-11T00:00:00.000Z"
+    },
+    {
+      "id": "prod_018",
+      "name": "Logitech MX Master 3S",
+      "slug": "logitech-mx-master-3s",
+      "description": "Advanced wireless mouse with 8K DPI sensor, quiet clicks, and MagSpeed electromagnetic scroll wheel.",
+      "shortDescription": "8K DPI, quiet clicks, MagSpeed scroll",
+      "price": 99.99,
+      "comparePrice": 109.99,
+      "categoryId": "cat_008",
+      "brand": "Logitech",
+      "sku": "LOG-MXM3S-GRY",
+      "stock": 120,
+      "images": [
+        "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600",
+        "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600"
+      ],
+      "specifications": {
+        "Sensor": "Darkfield 8000 DPI",
+        "Buttons": "7 programmable",
+        "Battery": "70 days",
+        "Connectivity": "Bluetooth, Logi Bolt"
+      },
+      "features": [
+        "Flow Cross-Computer",
+        "App-Specific Profiles",
+        "Quiet Clicks",
+        "USB-C Charging"
+      ],
+      "rating": 4.8,
+      "reviewCount": 567,
+      "isFeatured": false,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-17T00:00:00.000Z"
+    },
+    {
+      "id": "prod_019",
+      "name": "Canon EOS R6 Mark II",
+      "slug": "canon-eos-r6-mark-ii",
+      "description": "Full-frame mirrorless camera with 24.2MP, up to 40fps burst shooting, and 4K 60p video.",
+      "shortDescription": "24.2MP, 40fps burst, 4K 60p video",
+      "price": 2299.99,
+      "comparePrice": 2499.99,
+      "categoryId": "cat_006",
+      "brand": "Canon",
+      "sku": "CAN-R6M2-BODY",
+      "stock": 10,
+      "images": [
+        "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600",
+        "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=600"
+      ],
+      "specifications": {
+        "Sensor": "24.2MP Full-Frame",
+        "Processor": "DIGIC X",
+        "Video": "4K 60p, 6K RAW",
+        "AF Points": "1053 areas",
+        "Stabilization": "8-stop IBIS"
+      },
+      "features": [
+        "40fps Electronic Shutter",
+        "Subject Detection AF",
+        "Dual Card Slots",
+        "Weather Sealed"
+      ],
+      "rating": 4.7,
+      "reviewCount": 45,
+      "isFeatured": false,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-13T00:00:00.000Z"
+    },
+    {
+      "id": "prod_020",
+      "name": "Anker 737 Power Bank",
+      "slug": "anker-737-power-bank",
+      "description": "24,000mAh portable charger with 140W output, smart digital display, and three ports.",
+      "shortDescription": "24,000mAh, 140W, smart display",
+      "price": 109.99,
+      "comparePrice": 129.99,
+      "categoryId": "cat_008",
+      "brand": "Anker",
+      "sku": "ANK-737-24K",
+      "stock": 100,
+      "images": [
+        "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=600",
+        "https://images.unsplash.com/photo-1625842268584-8f3296236bf7?w=600"
+      ],
+      "specifications": {
+        "Capacity": "24,000mAh",
+        "Max Output": "140W USB-C",
+        "Ports": "2x USB-C, 1x USB-A",
+        "Weight": "630g"
+      },
+      "features": [
+        "140W Fast Charging",
+        "Smart Display",
+        "PowerIQ 3.0",
+        "MultiProtect Safety"
+      ],
+      "rating": 4.6,
+      "reviewCount": 210,
+      "isFeatured": false,
+      "isNew": false,
+      "isActive": true,
+      "createdAt": "2025-01-14T00:00:00.000Z"
+    }
+  ],
+  "carts": [
+    {
+      "userId": "usr_003",
+      "items": [
+        {
+          "productId": "prod_015",
+          "quantity": 1
+        }
+      ],
+      "updatedAt": "2026-03-23T05:10:03.132Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ord_001",
+      "userId": "usr_002",
+      "items": [
+        {
+          "productId": "prod_001",
+          "name": "iPhone 15 Pro Max",
+          "price": 1199.99,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600"
+        },
+        {
+          "productId": "prod_006",
+          "name": "Sony WH-1000XM5",
+          "price": 349.99,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600"
+        }
+      ],
+      "subtotal": 1549.98,
+      "discount": 0,
+      "shipping": 0,
+      "tax": 155,
+      "total": 1704.98,
+      "status": "delivered",
+      "paymentMethod": "credit_card",
+      "paymentStatus": "paid",
+      "shippingAddress": {
+        "street": "Amir Temur ko'chasi 108",
+        "city": "Tashkent",
+        "state": "Tashkent",
+        "zipCode": "100000",
+        "country": "Uzbekistan"
+      },
+      "trackingNumber": "TM-2025-00001",
+      "estimatedDelivery": "2025-02-05T00:00:00.000Z",
+      "deliveredAt": "2025-02-04T14:30:00.000Z",
+      "createdAt": "2025-01-30T10:00:00.000Z",
+      "updatedAt": "2025-02-04T14:30:00.000Z"
+    },
+    {
+      "id": "ord_002",
+      "userId": "usr_003",
+      "items": [
+        {
+          "productId": "prod_003",
+          "name": "MacBook Pro 16-inch M3 Max",
+          "price": 2499.99,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600"
+        }
+      ],
+      "subtotal": 2499.99,
+      "discount": 0,
+      "shipping": 0,
+      "tax": 250,
+      "total": 2749.99,
+      "status": "shipped",
+      "paymentMethod": "paypal",
+      "paymentStatus": "paid",
+      "shippingAddress": {
+        "street": "123 Main Street",
+        "city": "New York",
+        "state": "NY",
+        "zipCode": "10001",
+        "country": "USA"
+      },
+      "trackingNumber": "TM-2025-00002",
+      "estimatedDelivery": "2025-02-20T00:00:00.000Z",
+      "deliveredAt": null,
+      "createdAt": "2025-02-10T08:00:00.000Z",
+      "updatedAt": "2025-02-15T12:00:00.000Z"
+    },
+    {
+      "id": "ord_003",
+      "userId": "usr_002",
+      "items": [
+        {
+          "productId": "prod_010",
+          "name": "PlayStation 5 Slim",
+          "price": 449.99,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600"
+        },
+        {
+          "productId": "prod_018",
+          "name": "Logitech MX Master 3S",
+          "price": 99.99,
+          "quantity": 2,
+          "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600"
+        }
+      ],
+      "subtotal": 649.97,
+      "discount": 0,
+      "shipping": 0,
+      "tax": 65,
+      "total": 714.97,
+      "status": "processing",
+      "paymentMethod": "credit_card",
+      "paymentStatus": "paid",
+      "shippingAddress": {
+        "street": "Amir Temur ko'chasi 108",
+        "city": "Tashkent",
+        "state": "Tashkent",
+        "zipCode": "100000",
+        "country": "Uzbekistan"
+      },
+      "trackingNumber": "TM-2025-00003",
+      "estimatedDelivery": "2025-02-25T00:00:00.000Z",
+      "deliveredAt": null,
+      "createdAt": "2025-02-15T15:00:00.000Z",
+      "updatedAt": "2025-02-15T15:00:00.000Z"
+    },
+    {
+      "id": "ord_718b55",
+      "userId": "usr_003",
+      "items": [
+        {
+          "productId": "prod_012",
+          "name": "Google Pixel 8 Pro",
+          "price": 899.99,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600"
+        }
+      ],
+      "subtotal": 899.99,
+      "discount": 0,
+      "shipping": 0,
+      "tax": 90,
+      "total": 989.99,
+      "status": "processing",
+      "paymentMethod": "cash_on_delivery",
+      "paymentStatus": "paid",
+      "shippingAddress": {
+        "fullName": "John Doe",
+        "phone": "+1234567890",
+        "street": "123 Main Street",
+        "city": "New York",
+        "state": "NY",
+        "zipCode": "10001",
+        "country": "USA"
+      },
+      "trackingNumber": "TM-2026-00004",
+      "estimatedDelivery": "2026-02-26T06:13:50.477Z",
+      "deliveredAt": "2026-02-19T06:14:21.542Z",
+      "couponCode": null,
+      "createdAt": "2026-02-19T06:13:50.477Z",
+      "updatedAt": "2026-02-19T06:14:30.954Z"
+    },
+    {
+      "id": "ord_37f6b5",
+      "userId": "usr_003",
+      "items": [
+        {
+          "productId": "prod_015",
+          "name": "ASUS ROG Strix G16",
+          "price": 1799.99,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600"
+        }
+      ],
+      "subtotal": 1799.99,
+      "discount": 0,
+      "shipping": 0,
+      "tax": 180,
+      "total": 1979.99,
+      "status": "cancelled",
+      "paymentMethod": "cash_on_delivery",
+      "paymentStatus": "paid",
+      "shippingAddress": {
+        "fullName": "John Doe",
+        "phone": "+1234567890",
+        "street": "123 Main Street",
+        "city": "New York",
+        "state": "NY",
+        "zipCode": "10001",
+        "country": "USA"
+      },
+      "trackingNumber": "TM-2026-00005",
+      "estimatedDelivery": "2026-02-26T06:17:25.660Z",
+      "deliveredAt": "2026-03-23T04:56:37.770Z",
+      "couponCode": null,
+      "createdAt": "2026-02-19T06:17:25.660Z",
+      "updatedAt": "2026-03-23T04:57:12.396Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev_001",
+      "productId": "prod_001",
+      "userId": "usr_002",
+      "userName": "Diyorbek N.",
+      "rating": 5,
+      "title": "Best iPhone ever!",
+      "comment": "Amazing camera quality and the titanium design feels premium.",
+      "createdAt": "2025-02-05T10:00:00.000Z"
+    },
+    {
+      "id": "rev_002",
+      "productId": "prod_003",
+      "userId": "usr_003",
+      "userName": "John D.",
+      "rating": 5,
+      "title": "Incredible performance",
+      "comment": "The M3 Max is a beast. Handles everything without breaking a sweat.",
+      "createdAt": "2025-02-12T14:00:00.000Z"
+    },
+    {
+      "id": "rev_003",
+      "productId": "prod_006",
+      "userId": "usr_002",
+      "userName": "Diyorbek N.",
+      "rating": 4,
+      "title": "Great noise canceling",
+      "comment": "Sound quality is superb and ANC is the best I've tried.",
+      "createdAt": "2025-02-06T09:30:00.000Z"
+    }
+  ],
+  "wishlist": [],
+  "coupons": [
+    {
+      "id": "cpn_001",
+      "code": "WELCOME10",
+      "type": "percentage",
+      "value": 10,
+      "minOrder": 50,
+      "maxDiscount": 100,
+      "usageLimit": 100,
+      "usedCount": 12,
+      "isActive": true,
+      "expiresAt": "2025-12-31T23:59:59.000Z"
+    },
+    {
+      "id": "cpn_002",
+      "code": "TECH20",
+      "type": "percentage",
+      "value": 20,
+      "minOrder": 200,
+      "maxDiscount": 500,
+      "usageLimit": 50,
+      "usedCount": 5,
+      "isActive": true,
+      "expiresAt": "2025-06-30T23:59:59.000Z"
+    },
+    {
+      "id": "cpn_003",
+      "code": "FREESHIP",
+      "type": "fixed",
+      "value": 15,
+      "minOrder": 100,
+      "maxDiscount": 15,
+      "usageLimit": 200,
+      "usedCount": 45,
+      "isActive": true,
+      "expiresAt": "2025-12-31T23:59:59.000Z"
+    },
+    {
+      "id": "cpn_1771481813997",
+      "code": "CC",
+      "type": "percentage",
+      "value": 10,
+      "minOrder": 9,
+      "maxDiscount": 13,
+      "usageLimit": 100,
+      "usedCount": 0,
+      "isActive": true,
+      "expiresAt": "2026-02-20"
+    }
+  ],
+  "settings": {
+    "storeName": "TechMarket",
+    "storeEmail": "info@techmarket.com",
+    "storePhone": "+998 90 123 45 67",
+    "currency": "USD",
+    "taxRate": 10,
+    "freeShippingThreshold": 500,
+    "shippingRate": 9.99,
+    "socialLinks": {
+      "facebook": "https://facebook.com/techmarket",
+      "twitter": "https://twitter.com/techmarket",
+      "instagram": "https://instagram.com/techmarket",
+      "telegram": "https://t.me/techmarket"
+    }
+  }
+}

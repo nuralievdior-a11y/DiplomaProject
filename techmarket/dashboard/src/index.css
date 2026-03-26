@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; -webkit-font-smoothing: antialiased; }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #1e293b; }
+::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.animate-in { animation: fadeIn .4s ease-out forwards; }
+
+.glass { background: rgba(30,41,59,.6); backdrop-filter: blur(12px); border: 1px solid rgba(71,85,105,.3); }
+.gradient-text { background: linear-gradient(135deg,#818cf8,#6366f1,#a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+.badge-pending { @apply bg-amber-500/15 text-amber-400; }
+.badge-confirmed { @apply bg-blue-500/15 text-blue-400; }
+.badge-processing { @apply bg-indigo-500/15 text-indigo-400; }
+.badge-shipped { @apply bg-cyan-500/15 text-cyan-400; }
+.badge-delivered { @apply bg-emerald-500/15 text-emerald-400; }
+.badge-cancelled { @apply bg-red-500/15 text-red-400; }
