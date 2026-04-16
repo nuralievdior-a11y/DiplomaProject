@@ -5,11 +5,19 @@
       "src": "techmarket/frontend/package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "dist" }
+    },
+    {
+      "src": "techmarket/dashboard/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     }
   ],
   "routes": [
+    { "src": "^/$", "status": 308, "headers": { "Location": "/DiplomaProject/" } },
+    { "src": "^/DiplomaProject$", "status": 308, "headers": { "Location": "/DiplomaProject/" } },
+    { "src": "^/DiplomaProject/dashboard$", "status": 308, "headers": { "Location": "/DiplomaProject/dashboard/" } },
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "src": "^/DiplomaProject/dashboard/(.*)$", "dest": "/DiplomaProject/dashboard/index.html" },
+    { "src": "^/DiplomaProject/(.*)$", "dest": "/DiplomaProject/index.html" }
   ]
 }
-
