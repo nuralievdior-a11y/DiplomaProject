@@ -1,6 +1,8 @@
 {
   "routes": [
+    { "src": "^/$", "status": 308, "headers": { "Location": "/DiplomaProject/" } },
+    { "src": "^/DiplomaProject$", "status": 308, "headers": { "Location": "/DiplomaProject/" } },
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/" }
+    { "src": "^/DiplomaProject/(.*)$", "dest": "/DiplomaProject/index.html" }
   ]
 }

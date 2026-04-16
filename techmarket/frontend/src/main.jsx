@@ -7,5 +7,5 @@ import { CartProvider } from './context/CartContext'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter><AuthProvider><CartProvider><App /></CartProvider></AuthProvider></BrowserRouter>
+  <BrowserRouter basename={import.meta.env.BASE_URL}><AuthProvider><CartProvider><App /></CartProvider></AuthProvider></BrowserRouter>
 )
