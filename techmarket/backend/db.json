@@ -683,7 +683,7 @@
       "categoryId": "cat_002",
       "brand": "ASUS",
       "sku": "ASU-ROGG16-I9",
-      "stock": 15,
+      "stock": 14,
       "images": [
         "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600",
         "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600"
@@ -892,12 +892,7 @@
   "carts": [
     {
       "userId": "usr_003",
-      "items": [
-        {
-          "productId": "prod_015",
-          "quantity": 1
-        }
-      ],
+      "items": [],
       "updatedAt": "2026-03-23T05:10:03.132Z"
     }
   ],
@@ -959,7 +954,7 @@
       "shipping": 0,
       "tax": 250,
       "total": 2749.99,
-      "status": "shipped",
+      "status": "delivered",
       "paymentMethod": "paypal",
       "paymentStatus": "paid",
       "shippingAddress": {
@@ -971,9 +966,9 @@
       },
       "trackingNumber": "TM-2025-00002",
       "estimatedDelivery": "2025-02-20T00:00:00.000Z",
-      "deliveredAt": null,
+      "deliveredAt": "2026-04-17T08:58:04.203Z",
       "createdAt": "2025-02-10T08:00:00.000Z",
-      "updatedAt": "2025-02-15T12:00:00.000Z"
+      "updatedAt": "2026-04-17T08:58:04.203Z"
     },
     {
       "id": "ord_003",
@@ -999,7 +994,7 @@
       "shipping": 0,
       "tax": 65,
       "total": 714.97,
-      "status": "processing",
+      "status": "delivered",
       "paymentMethod": "credit_card",
       "paymentStatus": "paid",
       "shippingAddress": {
@@ -1011,9 +1006,9 @@
       },
       "trackingNumber": "TM-2025-00003",
       "estimatedDelivery": "2025-02-25T00:00:00.000Z",
-      "deliveredAt": null,
+      "deliveredAt": "2026-04-17T08:58:02.971Z",
       "createdAt": "2025-02-15T15:00:00.000Z",
-      "updatedAt": "2025-02-15T15:00:00.000Z"
+      "updatedAt": "2026-04-17T08:58:02.971Z"
     },
     {
       "id": "ord_718b55",
@@ -1032,7 +1027,7 @@
       "shipping": 0,
       "tax": 90,
       "total": 989.99,
-      "status": "processing",
+      "status": "delivered",
       "paymentMethod": "cash_on_delivery",
       "paymentStatus": "paid",
       "shippingAddress": {
@@ -1046,10 +1041,10 @@
       },
       "trackingNumber": "TM-2026-00004",
       "estimatedDelivery": "2026-02-26T06:13:50.477Z",
-      "deliveredAt": "2026-02-19T06:14:21.542Z",
+      "deliveredAt": "2026-04-17T08:58:22.226Z",
       "couponCode": null,
       "createdAt": "2026-02-19T06:13:50.477Z",
-      "updatedAt": "2026-02-19T06:14:30.954Z"
+      "updatedAt": "2026-04-17T08:58:22.226Z"
     },
     {
       "id": "ord_37f6b5",
@@ -1068,7 +1063,7 @@
       "shipping": 0,
       "tax": 180,
       "total": 1979.99,
-      "status": "cancelled",
+      "status": "processing",
       "paymentMethod": "cash_on_delivery",
       "paymentStatus": "paid",
       "shippingAddress": {
@@ -1085,7 +1080,43 @@
       "deliveredAt": "2026-03-23T04:56:37.770Z",
       "couponCode": null,
       "createdAt": "2026-02-19T06:17:25.660Z",
-      "updatedAt": "2026-03-23T04:57:12.396Z"
+      "updatedAt": "2026-04-17T08:58:07.567Z"
+    },
+    {
+      "id": "ord_f327c7",
+      "userId": "usr_003",
+      "items": [
+        {
+          "productId": "prod_015",
+          "name": "ASUS ROG Strix G16",
+          "price": 1799.99,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600"
+        }
+      ],
+      "subtotal": 1799.99,
+      "discount": 0,
+      "shipping": 0,
+      "tax": 180,
+      "total": 1979.99,
+      "status": "confirmed",
+      "paymentMethod": "cash_on_delivery",
+      "paymentStatus": "paid",
+      "shippingAddress": {
+        "fullName": "John Doe",
+        "phone": "+1234567890",
+        "street": "123 Main Street",
+        "city": "New York",
+        "state": "NY",
+        "zipCode": "10001",
+        "country": "USA"
+      },
+      "trackingNumber": "TM-2026-00006",
+      "estimatedDelivery": "2026-04-24T09:01:47.802Z",
+      "deliveredAt": null,
+      "couponCode": null,
+      "createdAt": "2026-04-17T09:01:47.803Z",
+      "updatedAt": "2026-04-17T09:02:30.263Z"
     }
   ],
   "reviews": [

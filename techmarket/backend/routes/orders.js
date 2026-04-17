@@ -45,8 +45,10 @@ module.exports = (db, saveDb) => {
   });
 
   router.post('/', authenticate, (req, res) => {
-    const { shippingAddress, paymentMethod, couponCode } = req.body;
+    const { shippingAddress, paymentMethod, couponCode, payment } = req.body;
     if (!shippingAddress || !paymentMethod) return res.status(400).json({ error: 'Address and payment required.' });
+    if (!['card', 'cash_on_delivery', 'paypal'].includes(paymentMethod))
+      return res.status(400).json({ error: 'Invalid payment method.' });
     const cart = db.carts.find(c => c.userId === req.user.id);
     if (!cart || !cart.items.length) return res.status(400).json({ error: 'Cart is empty.' });
 
@@ -70,6 +72,9 @@ module.exports = (db, saveDb) => {
     const tax = (subtotal - discount) * ((db.settings.taxRate || 10) / 100);
     const est = new Date(); est.setDate(est.getDate() + 7);
 
+    if (payment && payment.status === 'failed')
+      return res.status(402).json({ error: payment.message || 'Payment failed.' });
+
     const order = {
       id: `ord_${uuidv4().slice(0, 6)}`, userId: req.user.id, items: orderItems,
       subtotal: +subtotal.toFixed(2), discount: +discount.toFixed(2), shipping: +shipping.toFixed(2),
@@ -88,8 +93,8 @@ module.exports = (db, saveDb) => {
   });
 
   router.put('/:id/status', authenticate, isAdmin, (req, res) => {
-    const { status } = req.body;
-    if (!['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].includes(status))
+    const { status, reason } = req.body;
+    if (!['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'delivery_issue'].includes(status))
       return res.status(400).json({ error: 'Invalid status.' });
     const idx = db.orders.findIndex(o => o.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Not found.' });
@@ -97,6 +102,11 @@ module.exports = (db, saveDb) => {
     db.orders[idx].updatedAt = new Date().toISOString();
     if (status === 'delivered') db.orders[idx].deliveredAt = new Date().toISOString();
     if (status === 'cancelled') db.orders[idx].items.forEach(i => { const pi = db.products.findIndex(p => p.id === i.productId); if (pi > -1) db.products[pi].stock += i.quantity; });
+    if (status === 'delivery_issue') {
+      const trimmedReason = (reason || '').trim();
+      if (!trimmedReason) return res.status(400).json({ error: 'Delivery issue reason required.' });
+      db.orders[idx].deliveryIssue = { reason: trimmedReason, reportedAt: new Date().toISOString() };
+    }
     saveDb();
     res.json(db.orders[idx]);
   });
