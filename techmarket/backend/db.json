@@ -5,7 +5,7 @@
       "firstName": "Admin",
       "lastName": "TechMarket",
       "email": "admin@techmarket.com",
-      "password": "$2a$10$DXjwjgJ/oYuCrPQfMWi2yOQtGeIQgKs.6xbdQTnRvp2Chs9z/TadS",
+      "password": "$2a$10$hjbTSRkglZASonzmIEdMnO0ECo/P4xoxt1HwVSzyCNGQdPL/YJ8l.",
       "role": "admin",
       "phone": "+998901234567",
       "avatar": "",
@@ -18,7 +18,7 @@
       "firstName": "Diyorbek",
       "lastName": "Nuraliev",
       "email": "diyor@example.com",
-      "password": "$2a$10$tfSSWjkyNcTZVUgQhx0Yu.WXMiIJ8FkHrEvS2BqpDfF7W12WYfzre",
+      "password": "$2a$10$1DEyfTWLxYWuB./yNG3r1OIbKQT4bq6YcjnSH2zgtzIBz2t7PpTq6",
       "role": "customer",
       "phone": "+998907654321",
       "avatar": "",
@@ -42,7 +42,7 @@
       "firstName": "John",
       "lastName": "Doe",
       "email": "john@example.com",
-      "password": "$2a$10$Z.pUDL6tYRVvOhG8.rw0FOFUKHeaVzvmb0/VMpmKyHnBpgS.JwXUO",
+      "password": "$2a$10$sNVn0554HH7Ge7ExMMK7G.6MvOoKUpjvRBSJPa6iUuDlGMjNJazrG",
       "role": "customer",
       "phone": "+1234567890",
       "avatar": "",
@@ -573,7 +573,7 @@
       "categoryId": "cat_001",
       "brand": "Google",
       "sku": "GGL-PX8P-128",
-      "stock": 32,
+      "stock": 33,
       "images": [
         "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600",
         "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600"
@@ -893,7 +893,7 @@
     {
       "userId": "usr_003",
       "items": [],
-      "updatedAt": "2026-03-23T05:10:03.132Z"
+      "updatedAt": "2026-04-20T17:08:18.318Z"
     }
   ],
   "orders": [
@@ -954,7 +954,7 @@
       "shipping": 0,
       "tax": 250,
       "total": 2749.99,
-      "status": "delivered",
+      "status": "shipped",
       "paymentMethod": "paypal",
       "paymentStatus": "paid",
       "shippingAddress": {
@@ -966,9 +966,9 @@
       },
       "trackingNumber": "TM-2025-00002",
       "estimatedDelivery": "2025-02-20T00:00:00.000Z",
-      "deliveredAt": "2026-04-17T08:58:04.203Z",
+      "deliveredAt": null,
       "createdAt": "2025-02-10T08:00:00.000Z",
-      "updatedAt": "2026-04-17T08:58:04.203Z"
+      "updatedAt": "2025-02-15T12:00:00.000Z"
     },
     {
       "id": "ord_003",
@@ -994,7 +994,7 @@
       "shipping": 0,
       "tax": 65,
       "total": 714.97,
-      "status": "delivered",
+      "status": "processing",
       "paymentMethod": "credit_card",
       "paymentStatus": "paid",
       "shippingAddress": {
@@ -1006,117 +1006,9 @@
       },
       "trackingNumber": "TM-2025-00003",
       "estimatedDelivery": "2025-02-25T00:00:00.000Z",
-      "deliveredAt": "2026-04-17T08:58:02.971Z",
-      "createdAt": "2025-02-15T15:00:00.000Z",
-      "updatedAt": "2026-04-17T08:58:02.971Z"
-    },
-    {
-      "id": "ord_718b55",
-      "userId": "usr_003",
-      "items": [
-        {
-          "productId": "prod_012",
-          "name": "Google Pixel 8 Pro",
-          "price": 899.99,
-          "quantity": 1,
-          "image": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600"
-        }
-      ],
-      "subtotal": 899.99,
-      "discount": 0,
-      "shipping": 0,
-      "tax": 90,
-      "total": 989.99,
-      "status": "delivered",
-      "paymentMethod": "cash_on_delivery",
-      "paymentStatus": "paid",
-      "shippingAddress": {
-        "fullName": "John Doe",
-        "phone": "+1234567890",
-        "street": "123 Main Street",
-        "city": "New York",
-        "state": "NY",
-        "zipCode": "10001",
-        "country": "USA"
-      },
-      "trackingNumber": "TM-2026-00004",
-      "estimatedDelivery": "2026-02-26T06:13:50.477Z",
-      "deliveredAt": "2026-04-17T08:58:22.226Z",
-      "couponCode": null,
-      "createdAt": "2026-02-19T06:13:50.477Z",
-      "updatedAt": "2026-04-17T08:58:22.226Z"
-    },
-    {
-      "id": "ord_37f6b5",
-      "userId": "usr_003",
-      "items": [
-        {
-          "productId": "prod_015",
-          "name": "ASUS ROG Strix G16",
-          "price": 1799.99,
-          "quantity": 1,
-          "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600"
-        }
-      ],
-      "subtotal": 1799.99,
-      "discount": 0,
-      "shipping": 0,
-      "tax": 180,
-      "total": 1979.99,
-      "status": "processing",
-      "paymentMethod": "cash_on_delivery",
-      "paymentStatus": "paid",
-      "shippingAddress": {
-        "fullName": "John Doe",
-        "phone": "+1234567890",
-        "street": "123 Main Street",
-        "city": "New York",
-        "state": "NY",
-        "zipCode": "10001",
-        "country": "USA"
-      },
-      "trackingNumber": "TM-2026-00005",
-      "estimatedDelivery": "2026-02-26T06:17:25.660Z",
-      "deliveredAt": "2026-03-23T04:56:37.770Z",
-      "couponCode": null,
-      "createdAt": "2026-02-19T06:17:25.660Z",
-      "updatedAt": "2026-04-17T08:58:07.567Z"
-    },
-    {
-      "id": "ord_f327c7",
-      "userId": "usr_003",
-      "items": [
-        {
-          "productId": "prod_015",
-          "name": "ASUS ROG Strix G16",
-          "price": 1799.99,
-          "quantity": 1,
-          "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600"
-        }
-      ],
-      "subtotal": 1799.99,
-      "discount": 0,
-      "shipping": 0,
-      "tax": 180,
-      "total": 1979.99,
-      "status": "confirmed",
-      "paymentMethod": "cash_on_delivery",
-      "paymentStatus": "paid",
-      "shippingAddress": {
-        "fullName": "John Doe",
-        "phone": "+1234567890",
-        "street": "123 Main Street",
-        "city": "New York",
-        "state": "NY",
-        "zipCode": "10001",
-        "country": "USA"
-      },
-      "trackingNumber": "TM-2026-00006",
-      "estimatedDelivery": "2026-04-24T09:01:47.802Z",
       "deliveredAt": null,
-      "couponCode": null,
-      "createdAt": "2026-04-17T09:01:47.803Z",
-      "updatedAt": "2026-04-17T09:02:30.263Z"
+      "createdAt": "2025-02-15T15:00:00.000Z",
+      "updatedAt": "2025-02-15T15:00:00.000Z"
     }
   ],
   "reviews": [
@@ -1188,18 +1080,6 @@
       "usedCount": 45,
       "isActive": true,
       "expiresAt": "2025-12-31T23:59:59.000Z"
-    },
-    {
-      "id": "cpn_1771481813997",
-      "code": "CC",
-      "type": "percentage",
-      "value": 10,
-      "minOrder": 9,
-      "maxDiscount": 13,
-      "usageLimit": 100,
-      "usedCount": 0,
-      "isActive": true,
-      "expiresAt": "2026-02-20"
     }
   ],
   "settings": {
