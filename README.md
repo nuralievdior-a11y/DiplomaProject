@@ -28,7 +28,6 @@ techmarket/
   backend/      Express API + db.json
   frontend/     React customer website (Vite)
   dashboard/    React admin dashboard (Vite)
-vercel.json     Static SPA deploy rules (frontend + dashboard)
 ```
 
 ## Tech Stack
@@ -158,14 +157,6 @@ Reviews / Wishlist:
 - `GET /wishlist` (auth)
 - `POST /wishlist` (auth)
 - `DELETE /wishlist/:productId` (auth)
-
-## Deployment (Vercel)
-
-The repo includes `vercel.json` which deploys **two static SPAs**:
-- `frontend` at `/DiplomaProject/`
-- `dashboard` at `/DiplomaProject/dashboard/`
-
-Important: the backend is not included in this Vercel setup - deploy it separately (Render/Railway/VPS, etc.), then set `VITE_API_URL` for the SPAs.
 
 ## Default Accounts
 
