@@ -7,20 +7,21 @@ const bcrypt = require('bcryptjs');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ CORS (исправлено для продакшена)
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://your-frontend.vercel.app' // ← ЗАМЕНИ на свой
-];
+const parseCorsOrigins = (value) =>
+  String(value || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+const allowedOrigins = parseCorsOrigins(process.env.CORS_ORIGINS);
 
 app.use(cors({
-  origin: function (origin, callback) {
+  origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('CORS not allowed'), false);
-    }
+    if (allowedOrigins.length === 0) return callback(null, true);
+    return allowedOrigins.includes(origin)
+      ? callback(null, true)
+      : callback(new Error('CORS not allowed'), false);
   },
   credentials: true
 }));

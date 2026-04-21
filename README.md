@@ -51,6 +51,7 @@ API will run at `http://localhost:5000`.
 Optional environment variables:
 - `PORT` (default `5000`)
 - `JWT_SECRET` (falls back to a default value in code)
+- `CORS_ORIGINS` (comma-separated list of allowed origins; if not set, API allows any origin)
 
 ### 2) Frontend (customer website)
 
