@@ -7,17 +7,50 @@ const bcrypt = require('bcryptjs');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// ✅ CORS (исправлено для продакшена)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://your-frontend.vercel.app' // ← ЗАМЕНИ на свой
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('CORS not allowed'), false);
+    }
+  },
+  credentials: true
+}));
+
 // Middleware
-app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// ✅ Статика (картинки)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database
 const DB_PATH = path.join(__dirname, 'db.json');
 let db;
-try { db = JSON.parse(fs.readFileSync(DB_PATH, 'utf-8')); console.log('Database loaded'); } catch (err) { console.error('DB Error:', err.message); process.exit(1); }
-const saveDb = () => { try { fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2)); } catch (err) { console.error('Save Error:', err.message); } };
+
+try {
+  db = JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'));
+  console.log('Database loaded');
+} catch (err) {
+  console.error('DB Error:', err.message);
+  process.exit(1);
+}
+
+const saveDb = () => {
+  try {
+    fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
+  } catch (err) {
+    console.error('Save Error:', err.message);
+  }
+};
 
 // Ensure arrays exist
 if (!db.carts) db.carts = [];
@@ -25,33 +58,50 @@ if (!db.wishlist) db.wishlist = [];
 if (!db.reviews) db.reviews = [];
 if (!db.coupons) db.coupons = [];
 if (!db.orders) db.orders = [];
-if (!db.settings) db.settings = { storeName: 'TechMarket', storeEmail: 'info@techmarket.com', storePhone: '+998901234567', currency: 'USD', taxRate: 10, shippingRate: 9.99, freeShippingThreshold: 500, socialLinks: {} };
+if (!db.settings) {
+  db.settings = {
+    storeName: 'TechMarket',
+    storeEmail: 'info@techmarket.com',
+    storePhone: '+998901234567',
+    currency: 'USD',
+    taxRate: 10,
+    shippingRate: 9.99,
+    freeShippingThreshold: 500,
+    socialLinks: {}
+  };
+}
 
-// Auto-hash passwords on startup (ensures passwords always work)
+// ✅ Хеширование паролей
 const initPasswords = async () => {
   const defaultPasswords = {
     'admin@techmarket.com': 'admin123',
     'diyor@example.com': 'password123',
     'john@example.com': 'password123'
   };
+
   let changed = false;
+
   for (const user of db.users) {
     const defaultPwd = defaultPasswords[user.email];
+
     if (defaultPwd) {
-      // Always rehash to ensure it works
-      const isValid = user.password.startsWith('$2a$') || user.password.startsWith('$2b$');
-      if (isValid) {
+      const isHashed =
+        user.password.startsWith('$2a$') ||
+        user.password.startsWith('$2b$');
+
+      if (isHashed) {
         try {
           const match = await bcrypt.compare(defaultPwd, user.password);
-          if (match) continue; // Hash is correct, skip
-        } catch { }
+          if (match) continue;
+        } catch {}
       }
-      // Hash doesn't match or isn't valid - regenerate
+
       user.password = await bcrypt.hash(defaultPwd, 10);
       changed = true;
-      console.log(`  Password rehashed for ${user.email}`);
+      console.log(`Password fixed for ${user.email}`);
     }
   }
+
   if (changed) saveDb();
 };
 
@@ -67,23 +117,46 @@ app.use('/api', require('./routes/reviews')(db, saveDb));
 // Public settings
 app.get('/api/settings/public', (req, res) => {
   const s = db.settings || {};
-  res.json({ storeName: s.storeName, storeEmail: s.storeEmail, storePhone: s.storePhone, currency: s.currency, freeShippingThreshold: s.freeShippingThreshold, socialLinks: s.socialLinks });
-});
-
-app.get('/api/health', (req, res) => { res.json({ status: 'ok', name: 'TechMarket API', version: '1.0.0' }); });
-app.use((err, req, res, next) => { console.error(err.stack); res.status(500).json({ error: 'Internal server error' }); });
-app.use((req, res) => { res.status(404).json({ error: 'Route not found' }); });
-
-// Start server after password init
-initPasswords().then(() => {
-  app.listen(PORT, () => {
-    console.log(`\n  TechMarket API Server running on http://localhost:${PORT}`);
-    console.log(`  Admin: admin@techmarket.com / admin123`);
-    console.log(`  Customer: john@example.com / password123\n`);
+  res.json({
+    storeName: s.storeName,
+    storeEmail: s.storeEmail,
+    storePhone: s.storePhone,
+    currency: s.currency,
+    freeShippingThreshold: s.freeShippingThreshold,
+    socialLinks: s.socialLinks
   });
-}).catch(err => {
-  console.error('Init error:', err);
-  app.listen(PORT);
 });
+
+// Health check (важно для Render)
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    name: 'TechMarket API',
+    version: '1.0.0'
+  });
+});
+
+// Errors
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
+
+// Start server
+initPasswords()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Admin: admin@techmarket.com / admin123`);
+    });
+  })
+  .catch((err) => {
+    console.error('Init error:', err);
+    app.listen(PORT);
+  });
 
 module.exports = app;

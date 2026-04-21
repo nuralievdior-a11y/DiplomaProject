@@ -77,14 +77,22 @@ Open: `http://localhost:5174/DiplomaProject/dashboard/`
 By default, both SPAs use `baseURL = /api` and rely on the Vite dev proxy for local development.
 
 For production, set:
-- `VITE_API_URL` (example: `https://your-backend.example.com/api`)
+- `VITE_API_URL` (example: `https://your-backend.example.com`)
+
+Notes:
+- The apps will call `${VITE_API_URL}/api/...` automatically (if you set `VITE_API_URL` with a trailing `/api`, it still works).
+- Vite env vars are baked at build time, so on Vercel you must add `VITE_API_URL` in Project → Settings → Environment Variables and then redeploy.
+- Axios is configured with `withCredentials: true`; the backend already enables CORS credentials (`cors({ origin: true, credentials: true })`).
 
 PowerShell example:
 
 ```powershell
-$env:VITE_API_URL="https://your-backend.example.com/api"
+$env:VITE_API_URL="https://your-backend.example.com"
 npm run build
 ```
+
+Optional (local dev proxy target override):
+- `VITE_DEV_API_TARGET` (default: `http://127.0.0.1:5000`)
 
 Files where it is used:
 - `techmarket/frontend/src/api.js`
