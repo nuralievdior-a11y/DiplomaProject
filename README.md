@@ -23,6 +23,7 @@ Key API modules:
 
 ## Repository Structure
 
+
 ```
 techmarket/
   backend/      Express API + db.json
@@ -61,7 +62,7 @@ npm install
 npm run dev
 ```
 
-Open: `http://localhost:5173/DiplomaProject/`
+Open: `https://diploma-project-7wvh-r0avxqzse-nuralievdior-gmailcoms-projects.vercel.app/`
 
 ### 3) Dashboard (admin)
 
@@ -71,7 +72,7 @@ npm install
 npm run dev
 ```
 
-Open: `http://localhost:5174/DiplomaProject/dashboard/`
+Open: `https://diploma-project-hz3r-fps56nkvp-nuralievdior-gmailcoms-projects.vercel.app/login`
 
 ## API URL Configuration (frontend/dashboard)
 

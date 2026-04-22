@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { Star, ShoppingBag, Heart, Minus, Plus, Truck, ShieldCheck, RotateCcw, Check, ChevronRight, Package } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -7,10 +7,12 @@ import api from '../api';
 import toast from 'react-hot-toast';
 import ProductCard from '../components/ProductCard';
 
+
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+  const { isAuthenticated, user } = useAuth();
   const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
@@ -20,6 +22,15 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
   const [wishlisted, setWishlisted] = useState(false);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewTitle, setReviewTitle] = useState('');
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+
+  useEffect(() => {
+    const tab = new URLSearchParams(location.search).get('tab');
+    if (tab && ['description', 'specifications', 'reviews'].includes(tab)) setActiveTab(tab);
+  }, [location.search, id]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -73,6 +84,41 @@ export default function ProductDetail() {
     } catch { }
   };
 
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) { toast.error('Please sign in to review'); navigate('/login'); return; }
+    if (!product?.id) return;
+    if (!reviewRating) { toast.error('Please select a rating'); return; }
+
+    setReviewSubmitting(true);
+    try {
+      const res = await api.post('/reviews', {
+        productId: product.id,
+        rating: reviewRating,
+        title: reviewTitle.trim(),
+        comment: reviewComment.trim()
+      });
+
+      const newReview = res.data;
+      setReviews((prev) => {
+        const next = [newReview, ...prev];
+        const avg = next.length > 0
+          ? +(next.reduce((sum, r) => sum + (parseInt(r.rating, 10) || 0), 0) / next.length).toFixed(1)
+          : 0;
+        setProduct(p => (p ? { ...p, rating: avg, reviewCount: next.length } : p));
+        return next;
+      });
+      setReviewRating(0);
+      setReviewTitle('');
+      setReviewComment('');
+      toast.success('Review submitted!');
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to submit review');
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
+
   if (loading) return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid lg:grid-cols-2 gap-12">
@@ -91,6 +137,7 @@ export default function ProductDetail() {
   const stock = product.stock || 0;
   const rating = product.rating || 0;
   const reviewCount = product.reviewCount || 0;
+  const alreadyReviewed = !!(user?.id && reviews.some(r => r.userId === user.id));
 
   return (
     <div>
@@ -129,7 +176,7 @@ export default function ProductDetail() {
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 font-display leading-tight">{product.name}</h1>
 
-            <div className="flex items-center gap-3 mt-3">
+            <button type="button" onClick={() => setActiveTab('reviews')} className="flex items-center gap-3 mt-3 hover:opacity-90 transition-opacity" aria-label="Open reviews">
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className={`w-4 h-4 ${i < Math.floor(rating) ? 'text-amber-400 fill-amber-400' : 'text-neutral-200 fill-neutral-200'}`} />
@@ -137,7 +184,8 @@ export default function ProductDetail() {
               </div>
               <span className="text-sm font-semibold text-neutral-700">{rating.toFixed(1)}</span>
               <span className="text-sm text-neutral-400">({reviewCount} reviews)</span>
-            </div>
+              <span className="text-sm font-semibold text-brand-600 ml-1">Rate</span>
+            </button>
 
             <div className="flex items-baseline gap-3 mt-5">
               <span className="text-3xl font-bold text-neutral-900 font-display">${price.toFixed(2)}</span>
@@ -230,6 +278,62 @@ export default function ProductDetail() {
             )}
             {activeTab === 'reviews' && (
               <div className="max-w-3xl">
+                <div className="bg-neutral-50 rounded-2xl p-5 mb-6 border border-neutral-100">
+                  <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <div>
+                      <p className="text-sm font-bold text-neutral-900">Leave a review</p>
+                      <p className="text-xs text-neutral-500 mt-1">Rate this product and share your experience.</p>
+                    </div>
+                    {!isAuthenticated && (
+                      <button onClick={() => navigate('/login')} className="btn-primary py-2.5 px-4 text-xs">
+                        Sign in to review
+                      </button>
+                    )}
+                  </div>
+
+                  {isAuthenticated && alreadyReviewed ? (
+                    <p className="text-sm text-neutral-600 mt-4">You already reviewed this product.</p>
+                  ) : isAuthenticated ? (
+                    <form onSubmit={handleSubmitReview} className="mt-4 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold text-neutral-600 w-16">Rating</span>
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map(v => (
+                            <button
+                              key={v}
+                              type="button"
+                              onClick={() => setReviewRating(v)}
+                              className="p-1 rounded hover:bg-white transition-colors"
+                              aria-label={`Rate ${v} star${v === 1 ? '' : 's'}`}
+                            >
+                              <Star className={`w-5 h-5 ${v <= reviewRating ? 'text-amber-400 fill-amber-400' : 'text-neutral-300'}`} />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <input
+                        value={reviewTitle}
+                        onChange={(e) => setReviewTitle(e.target.value)}
+                        placeholder="Title (optional)"
+                        className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-white text-sm outline-none focus:ring-2 focus:ring-brand-200"
+                      />
+
+                      <textarea
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                        placeholder="Comment"
+                        rows={4}
+                        className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-white text-sm outline-none focus:ring-2 focus:ring-brand-200 resize-none"
+                      />
+
+                      <button disabled={reviewSubmitting} className="btn-primary py-3 px-5 text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+                        {reviewSubmitting ? 'Submitting...' : 'Submit review'}
+                      </button>
+                    </form>
+                  ) : null}
+                </div>
+
                 {reviews.length === 0 ? (
                   <div className="text-center py-12">
                     <Star className="w-10 h-10 text-neutral-200 mx-auto mb-3" />

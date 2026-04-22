@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Star, ShoppingBag, Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -6,12 +6,20 @@ import toast from 'react-hot-toast';
 
 export default function ProductCard({ product, onWishlist }) {
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const { addToCart } = useCart();
   const price = typeof product.price === 'number' ? product.price : parseFloat(product.price) || 0;
   const comparePrice = typeof product.comparePrice === 'number' ? product.comparePrice : parseFloat(product.comparePrice) || 0;
   const discount = comparePrice > price
     ? Math.round(((comparePrice - price) / comparePrice) * 100) : 0;
 
+  const handleOpenReviews = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/products/${product.slug || product.id}?tab=reviews`);
+  };
+
+  
   const handleAdd = async (e) => {
     e.preventDefault(); e.stopPropagation();
     if (!isAuthenticated) { toast.error('Please sign in to add items'); return; }
@@ -58,12 +66,15 @@ export default function ProductCard({ product, onWishlist }) {
 
         {/* Rating */}
         <div className="flex items-center gap-1.5 mt-2">
-          <div className="flex items-center gap-0.5">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className={`w-3 h-3 ${i < Math.floor(product.rating || 0) ? 'text-amber-400 fill-amber-400' : 'text-neutral-200 fill-neutral-200'}`} />
-            ))}
-          </div>
-          <span className="text-xs text-neutral-400">({product.reviewCount || 0})</span>
+          <button type="button" onClick={handleOpenReviews} className="flex items-center gap-1.5 hover:opacity-90 transition-opacity" aria-label="Open reviews">
+            <div className="flex items-center gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className={`w-3 h-3 ${i < Math.floor(product.rating || 0) ? 'text-amber-400 fill-amber-400' : 'text-neutral-200 fill-neutral-200'}`} />
+              ))}
+            </div>
+            <span className="text-xs text-neutral-400">({product.reviewCount || 0})</span>
+            <span className="text-xs font-semibold text-brand-600 ml-1">Rate</span>
+          </button>
         </div>
 
         {/* Price */}
