@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { Star, ShoppingBag, Heart, Minus, Plus, Truck, ShieldCheck, RotateCcw, Check, ChevronRight, Package } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -26,11 +26,28 @@ export default function ProductDetail() {
   const [reviewTitle, setReviewTitle] = useState('');
   const [reviewComment, setReviewComment] = useState('');
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const reviewsSectionRef = useRef(null);
+
+  const scrollToReviews = () => {
+    // Wait for the reviews tab panel to render
+    setTimeout(() => {
+      reviewsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  };
+
+  const openReviews = () => {
+    setActiveTab('reviews');
+    scrollToReviews();
+  };
 
   useEffect(() => {
     const tab = new URLSearchParams(location.search).get('tab');
     if (tab && ['description', 'specifications', 'reviews'].includes(tab)) setActiveTab(tab);
   }, [location.search, id]);
+
+  useEffect(() => {
+    if (activeTab === 'reviews') scrollToReviews();
+  }, [activeTab]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -176,7 +193,7 @@ export default function ProductDetail() {
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 font-display leading-tight">{product.name}</h1>
 
-            <button type="button" onClick={() => setActiveTab('reviews')} className="flex items-center gap-3 mt-3 hover:opacity-90 transition-opacity" aria-label="Open reviews">
+            <button type="button" onClick={openReviews} className="flex items-center gap-3 mt-3 hover:opacity-90 transition-opacity" aria-label="Open reviews">
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className={`w-4 h-4 ${i < Math.floor(rating) ? 'text-amber-400 fill-amber-400' : 'text-neutral-200 fill-neutral-200'}`} />
@@ -225,6 +242,9 @@ export default function ProductDetail() {
               </div>
               <button onClick={() => { handleAddToCart(); setTimeout(() => navigate('/checkout'), 300); }} disabled={stock === 0}
                 className="w-full mt-3 py-3.5 text-sm font-semibold text-brand-600 border-2 border-brand-200 rounded-2xl hover:bg-brand-50 transition-all disabled:opacity-40">Buy Now</button>
+              <button type="button" onClick={openReviews} className="w-full mt-3 py-3.5 text-sm font-semibold text-neutral-800 border-2 border-neutral-200 rounded-2xl hover:bg-neutral-50 transition-all">
+                Rate this product
+              </button>
             </div>
 
             <div className="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-neutral-100">
@@ -277,7 +297,7 @@ export default function ProductDetail() {
               </div>
             )}
             {activeTab === 'reviews' && (
-              <div className="max-w-3xl">
+              <div ref={reviewsSectionRef} className="max-w-3xl">
                 <div className="bg-neutral-50 rounded-2xl p-5 mb-6 border border-neutral-100">
                   <div className="flex items-center justify-between gap-4 flex-wrap">
                     <div>
