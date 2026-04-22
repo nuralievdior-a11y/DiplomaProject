@@ -1,7 +1,30 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Zap, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Send } from 'lucide-react';
+import api from '../api';
+import toast from 'react-hot-toast';
 
 export default function Footer() {
+  const [email, setEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    const nextEmail = String(email || '').trim();
+    if (!nextEmail) { toast.error('Please enter your email'); return; }
+
+    setSubmitting(true);
+    try {
+      await api.post('/newsletter/subscribe', { email: nextEmail });
+      setEmail('');
+      toast.success('Subscribed!');
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to subscribe');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <footer className="bg-neutral-900 text-neutral-300 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -11,12 +34,19 @@ export default function Footer() {
             <h3 className="text-xl font-bold text-white font-display">Stay in the loop</h3>
             <p className="text-sm text-neutral-400 mt-1">Get the latest deals and tech news delivered to your inbox.</p>
           </div>
-          <div className="flex w-full md:w-auto">
-            <input type="email" placeholder="Enter your email" className="flex-1 md:w-72 px-5 py-3 bg-neutral-800 border border-neutral-700 rounded-l-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-brand-500" />
-            <button className="px-6 py-3 bg-brand-600 text-white font-semibold rounded-r-xl hover:bg-brand-500 transition-colors flex items-center gap-2 text-sm">
+          <form onSubmit={handleSubscribe} className="flex w-full md:w-auto">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              autoComplete="email"
+              className="flex-1 md:w-72 px-5 py-3 bg-neutral-800 border border-neutral-700 rounded-l-xl text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-brand-500"
+            />
+            <button disabled={submitting} className="px-6 py-3 bg-brand-600 text-white font-semibold rounded-r-xl hover:bg-brand-500 transition-colors flex items-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
               <Send className="w-4 h-4" /> Subscribe
             </button>
-          </div>
+          </form>
         </div>
 
         {/* Links */}

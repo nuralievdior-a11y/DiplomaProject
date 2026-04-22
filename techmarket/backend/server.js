@@ -59,6 +59,7 @@ if (!db.wishlist) db.wishlist = [];
 if (!db.reviews) db.reviews = [];
 if (!db.coupons) db.coupons = [];
 if (!db.orders) db.orders = [];
+if (!db.newsletter) db.newsletter = [];
 if (!db.settings) {
   db.settings = {
     storeName: 'TechMarket',
@@ -114,6 +115,7 @@ app.use('/api/cart', require('./routes/cart')(db, saveDb));
 app.use('/api/orders', require('./routes/orders')(db, saveDb));
 app.use('/api/admin', require('./routes/admin')(db, saveDb));
 app.use('/api', require('./routes/reviews')(db, saveDb));
+app.use('/api/newsletter', require('./routes/newsletter')(db, saveDb));
 
 // Public settings
 app.get('/api/settings/public', (req, res) => {
