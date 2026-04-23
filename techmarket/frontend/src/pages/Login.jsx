@@ -72,13 +72,6 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Demo credentials */}
-          <div className="mt-5 p-3 bg-brand-50 rounded-xl">
-            <p className="text-xs text-brand-600 font-medium text-center">
-              Demo: <button onClick={() => { setEmail('john@example.com'); setPassword('password123'); }} className="font-bold hover:underline">john@example.com</button> / password123
-            </p>
-          </div>
-
           <div className="text-center mt-6">
             <p className="text-sm text-neutral-400">
               Don't have an account? <Link to="/register" className="text-brand-600 font-semibold hover:text-brand-700">Create one</Link>

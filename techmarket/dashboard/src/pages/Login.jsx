@@ -5,8 +5,8 @@ import { Zap, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function Login() {
-  const [email, setEmail] = useState('admin@techmarket.com');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -59,7 +59,6 @@ export default function Login() {
               {loading ? <span className="flex items-center justify-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/>Signing in...</span> : 'Sign In'}
             </button>
           </form>
-          <p className="mt-6 text-xs text-surface-500 text-center bg-surface-800/30 p-3 rounded-xl">Demo: <span className="text-surface-300">admin@techmarket.com</span> / <span className="text-surface-300">admin123</span></p>
         </div>
       </div>
     </div>
