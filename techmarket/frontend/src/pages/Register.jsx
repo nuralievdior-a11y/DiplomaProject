@@ -47,55 +47,55 @@ export default function Register() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1.5 block">First Name *</label>
+                <label htmlFor="register-firstName" className="sr-only">First Name</label>
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-                  <input type="text" value={form.firstName} onChange={e => update('firstName', e.target.value)} placeholder="John"
+                  <input id="register-firstName" type="text" value={form.firstName} onChange={e => update('firstName', e.target.value)} placeholder="First name"
                     className="w-full pl-11 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all" />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1.5 block">Last Name *</label>
-                <input type="text" value={form.lastName} onChange={e => update('lastName', e.target.value)} placeholder="Doe"
+                <label htmlFor="register-lastName" className="sr-only">Last Name</label>
+                <input id="register-lastName" type="text" value={form.lastName} onChange={e => update('lastName', e.target.value)} placeholder="Last name"
                   className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all" />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1.5 block">Email *</label>
+              <label htmlFor="register-email" className="sr-only">Email</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-                <input type="email" value={form.email} onChange={e => update('email', e.target.value)} placeholder="you@example.com"
+                <input id="register-email" type="email" value={form.email} onChange={e => update('email', e.target.value)} placeholder="you@example.com"
                   className="w-full pl-11 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all" />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1.5 block">Phone</label>
+              <label htmlFor="register-phone" className="sr-only">Phone</label>
               <div className="relative">
                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-                <input type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} placeholder="+998 90 123 45 67"
+                <input id="register-phone" type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} placeholder="+998 90 123 45 67"
                   className="w-full pl-11 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all" />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1.5 block">Password *</label>
+              <label htmlFor="register-password" className="sr-only">Password</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-                <input type={showPass ? 'text' : 'password'} value={form.password} onChange={e => update('password', e.target.value)} placeholder="Min. 6 characters"
+                <input id="register-password" type={showPass ? 'text' : 'password'} value={form.password} onChange={e => update('password', e.target.value)} placeholder="Min. 6 characters"
                   className="w-full pl-11 pr-12 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all" />
-                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600">
+                <button type="button" aria-label={showPass ? 'Hide password' : 'Show password'} onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600">
                   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1.5 block">Confirm Password *</label>
+              <label htmlFor="register-confirm" className="sr-only">Confirm Password</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
-                <input type="password" value={form.confirm} onChange={e => update('confirm', e.target.value)} placeholder="Repeat your password"
+                <input id="register-confirm" type="password" value={form.confirm} onChange={e => update('confirm', e.target.value)} placeholder="Repeat your password"
                   className="w-full pl-11 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all" />
               </div>
             </div>
