@@ -13,6 +13,7 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import Wishlist from './pages/Wishlist';
+import ScrollToTop from './components/ScrollToTop';
 
 const Protected = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -24,6 +25,7 @@ export default function App() {
   return (
     <>
       <Toaster position="top-center" toastOptions={{ duration: 3000, style: { background: '#171717', color: '#fafafa', borderRadius: '16px', fontSize: '14px', padding: '12px 20px' } }} />
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1">
