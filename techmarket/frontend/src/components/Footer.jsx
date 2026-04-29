@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Zap, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Send } from 'lucide-react';
 import api from '../api';
@@ -7,6 +7,39 @@ import toast from 'react-hot-toast';
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [socialLinks, setSocialLinks] = useState(null);
+
+  const fallbackSocials = useMemo(() => ({
+    facebook: 'https://www.facebook.com/groups/110464269564953/',
+    twitter: 'https://x.com/TeckMarket',
+    instagram: 'https://www.instagram.com/techmarketuz/'
+  }), []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await api.get('/settings/public');
+        if (!cancelled) setSocialLinks(res.data?.socialLinks || {});
+      } catch {
+        if (!cancelled) setSocialLinks(null);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, []);
+
+  const socials = useMemo(() => {
+    const links = socialLinks ?? fallbackSocials;
+    const items = [
+      { key: 'facebook', Icon: Facebook, href: links.facebook },
+      { key: 'twitter', Icon: Twitter, href: links.twitter },
+      { key: 'instagram', Icon: Instagram, href: links.instagram }
+    ];
+
+    return items.filter((x) => typeof x.href === 'string' && x.href.trim());
+  }, [socialLinks]);
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -60,8 +93,14 @@ export default function Footer() {
             </div>
             <p className="text-sm text-neutral-400 leading-relaxed mb-4">Your trusted destination for premium electronics with fast delivery and competitive prices.</p>
             <div className="flex gap-3">
-              {[Facebook, Twitter, Instagram].map((Icon, i) => (
-                <a key={i} href="#" className="w-9 h-9 rounded-xl bg-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-brand-600 transition-all">
+              {socials.map(({ key, Icon, href }) => (
+                <a
+                  key={key}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="w-9 h-9 rounded-xl bg-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-brand-600 transition-all"
+                >
                   <Icon className="w-4 h-4" />
                 </a>
               ))}
