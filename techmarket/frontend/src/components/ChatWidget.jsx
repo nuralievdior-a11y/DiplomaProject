@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Loader2, MessageSquareText, Paperclip, X } from 'lucide-react';
+import { ArrowRight, Loader2, MessageSquareText, Paperclip, X, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../api';
 
@@ -75,16 +75,18 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
       {open && (
         <div className="w-[420px] max-w-[calc(100vw-48px)] h-[560px] max-h-[calc(100vh-140px)] rounded-2xl shadow-2xl border border-neutral-200 bg-white overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 bg-white">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-9 h-9 rounded-lg bg-pink-600 text-white flex items-center justify-center font-semibold shrink-0">
-                TM
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-500/20 shrink-0">
+                <Zap className="w-5 h-5 text-white" />
               </div>
               <div className="min-w-0">
-                <div className="font-semibold text-neutral-900 truncate">TechMarket</div>
+                <div className="text-base font-bold font-display tracking-tight text-neutral-900 truncate">
+                  Tech<span className="text-brand-600">Market</span>
+                </div>
                 <div className="text-xs text-neutral-500 truncate">Support service</div>
               </div>
             </div>
@@ -107,8 +109,8 @@ export default function ChatWidget() {
                     className={cn(
                       'max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap',
                       isUser
-                        ? 'bg-pink-600 text-white rounded-br-md'
-                        : 'bg-neutral-100 text-neutral-900 rounded-bl-md'
+                        ? 'bg-brand-700 text-white rounded-br-md'
+                        : 'bg-brand-50 text-neutral-900 rounded-bl-md border border-brand-100'
                     )}
                   >
                     <div>{m.content}</div>
@@ -120,7 +122,7 @@ export default function ChatWidget() {
 
             {sending && (
               <div className="flex justify-start">
-                <div className="bg-white text-neutral-700 rounded-2xl rounded-bl-md px-3 py-2 text-sm inline-flex items-center gap-2 border border-neutral-200 shadow-sm">
+                <div className="bg-brand-50 text-neutral-700 rounded-2xl rounded-bl-md px-3 py-2 text-sm inline-flex items-center gap-2 border border-brand-100 shadow-sm">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Typing…
                 </div>
@@ -143,13 +145,13 @@ export default function ChatWidget() {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click?.()}
-                className="w-10 h-10 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700 inline-flex items-center justify-center"
+                className="w-10 h-10 rounded-xl border border-brand-200 bg-white hover:bg-brand-50 text-brand-800 inline-flex items-center justify-center"
                 aria-label="Attach file"
               >
                 <Paperclip className="w-5 h-5" />
               </button>
 
-              <div className="flex-1 flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-3 py-2 focus-within:ring-2 focus-within:ring-pink-200 focus-within:border-pink-400">
+              <div className="flex-1 flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-3 py-2 focus-within:ring-2 focus-within:ring-brand-200 focus-within:border-brand-500">
                 <input
                   ref={inputRef}
                   value={input}
@@ -168,10 +170,10 @@ export default function ChatWidget() {
                   type="button"
                   onClick={send}
                   disabled={sending || !input.trim()}
-                  className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-neutral-200 bg-white hover:bg-neutral-50 disabled:opacity-50"
+                  className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-brand-200 bg-white hover:bg-brand-50 disabled:opacity-50"
                   aria-label="Send message"
                 >
-                  <ArrowRight className="w-5 h-5 text-neutral-900" />
+                  <ArrowRight className="w-5 h-5 text-brand-800" />
                 </button>
               </div>
             </div>
@@ -186,9 +188,8 @@ export default function ChatWidget() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          'w-14 h-14 rounded-full shadow-2xl border border-pink-200 flex items-center justify-center',
-          open && 'mt-4',
-          open ? 'bg-pink-700 text-white' : 'bg-pink-600 text-white hover:bg-pink-700'
+          'w-14 h-14 rounded-full shadow-2xl border border-brand-200 flex items-center justify-center',
+          open ? 'bg-brand-800 text-white border-brand-200' : 'bg-brand-700 text-white hover:bg-brand-800 border-brand-200'
         )}
         aria-label="Toggle chat"
       >
