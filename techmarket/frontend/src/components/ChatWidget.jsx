@@ -188,8 +188,8 @@ export default function ChatWidget() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          'w-14 h-14 rounded-full shadow-2xl border border-brand-200 flex items-center justify-center',
-          open ? 'bg-brand-800 text-white border-brand-200' : 'bg-brand-700 text-white hover:bg-brand-800 border-brand-200'
+          'w-14 h-14 rounded-full shadow-2xl flex items-center justify-center focus:outline-none',
+          open ? 'bg-brand-800 text-white' : 'bg-brand-700 text-white hover:bg-brand-800'
         )}
         aria-label="Toggle chat"
       >
