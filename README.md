@@ -53,6 +53,10 @@ Optional environment variables:
 - `PORT` (default `5000`)
 - `JWT_SECRET` (falls back to a default value in code)
 - `CORS_ORIGINS` (comma-separated list of allowed origins; if not set, API allows any origin)
+- AI chat (optional):
+  - `OPENAI_API_KEY` (required to enable `/api/ai/chat`)
+  - `OPENAI_MODEL` (default `gpt-4.1`)
+  - `OPENAI_BASE_URL` (default `https://api.openai.com/v1`)
 
 ### 2) Frontend (customer website)
 
@@ -167,6 +171,10 @@ Reviews / Wishlist:
 - `GET /wishlist` (auth)
 - `POST /wishlist` (auth)
 - `DELETE /wishlist/:productId` (auth)
+
+AI assistant:
+- `GET /ai/status`
+- `POST /ai/chat` (body: `{ messages: [{ role, content }] }`)
 
 ## Default Accounts
 

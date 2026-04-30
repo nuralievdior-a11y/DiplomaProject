@@ -116,6 +116,7 @@ app.use('/api/orders', require('./routes/orders')(db, saveDb));
 app.use('/api/admin', require('./routes/admin')(db, saveDb));
 app.use('/api', require('./routes/reviews')(db, saveDb));
 app.use('/api/newsletter', require('./routes/newsletter')(db, saveDb));
+app.use('/api/ai', require('./routes/ai')(db, saveDb));
 
 // Public settings
 app.get('/api/settings/public', (req, res) => {

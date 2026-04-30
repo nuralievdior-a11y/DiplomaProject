@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import Wishlist from './pages/Wishlist';
 import ScrollToTop from './components/ScrollToTop';
+import ChatWidget from './components/ChatWidget';
 
 const Protected = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -45,6 +46,7 @@ export default function App() {
         </main>
         <Footer />
       </div>
+      <ChatWidget />
     </>
   );
 }
