@@ -58,6 +58,8 @@ Optional environment variables:
   - `OPENAI_MODEL` (default `gpt-4.1`)
   - `OPENAI_BASE_URL` (default `https://api.openai.com/v1`)
 
+You can place these in `techmarket/backend/.env` (see `techmarket/backend/.env.example`). The backend loads it via `dotenv`.
+
 ### 2) Frontend (customer website)
 
 ```bash

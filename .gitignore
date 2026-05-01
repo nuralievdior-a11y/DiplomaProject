@@ -11,3 +11,9 @@ pnpm-debug.log*
 
 .DS_Store
 Thumbs.db
+
+# Backend secrets (do not commit)
+techmarket/backend/.env
+techmarket/backend/.env.local
+techmarket/backend/.env.development
+techmarket/backend/.env.production
