@@ -1,4 +1,5 @@
 const express = require('express');
+const { query } = require('../config/database');
 
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1';
@@ -23,14 +24,18 @@ const tokenize = (text) =>
     .filter((t) => t.length >= 3)
     .slice(0, 24);
 
-const buildProductContext = (db, userText) => {
+const buildProductContext = async (userText) => {
   const tokens = tokenize(userText);
-  const products = Array.isArray(db?.products) ? db.products : [];
+  const productsRes = await query('SELECT id, name, description, brand, price, compare_price, stock, rating, is_active FROM products WHERE is_active = TRUE');
+  const products = productsRes.rows.map(r => ({
+    id: r.id, name: r.name, description: r.description, brand: r.brand,
+    price: parseFloat(r.price), comparePrice: r.compare_price ? parseFloat(r.compare_price) : null,
+    stock: r.stock, rating: parseFloat(r.rating), isActive: r.is_active,
+  }));
   if (tokens.length === 0 || products.length === 0) return '';
 
   const scored = [];
   for (const p of products) {
-    if (!p?.isActive) continue;
     const hay = `${p.name || ''} ${p.description || ''} ${p.brand || ''}`.toLowerCase();
     let score = 0;
     for (const t of tokens) if (hay.includes(t)) score += 1;
@@ -50,8 +55,26 @@ const buildProductContext = (db, userText) => {
 
   if (top.length === 0) return '';
   return `Relevant products (for reference):\n${top
-    .map((p) => `- ${p.name} (${p.brand}) — ${p.price}${p.comparePrice ? ` (was ${p.comparePrice})` : ''}, stock: ${p.stock}, id: ${p.id}`)
+    .map((p) => `- ${p.name} (${p.brand}) - ${p.price}${p.comparePrice ? ` (was ${p.comparePrice})` : ''}, stock: ${p.stock}, id: ${p.id}`)
     .join('\n')}`;
+};
+
+const parseSettingValue = (value) => {
+  if (typeof value !== 'string') return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return value;
+  }
+};
+
+const getStoreSettings = async () => {
+  const r = await query("SELECT key, value FROM settings WHERE key IN ('storeName','currency','storePhone','storeEmail')");
+  const settings = {};
+  for (const row of r.rows) {
+    settings[row.key] = parseSettingValue(row.value);
+  }
+  return settings;
 };
 
 const extractOutputText = (data) => {
@@ -68,7 +91,7 @@ const extractOutputText = (data) => {
   return texts.join('').trim();
 };
 
-module.exports = (db) => {
+module.exports = () => {
   const router = express.Router();
 
   router.get('/status', (req, res) => {
@@ -92,8 +115,15 @@ module.exports = (db) => {
     if (messages.length === 0) return res.status(400).json({ error: 'messages is required.' });
 
     const lastUser = [...messages].reverse().find((m) => m.role === 'user');
-    const settings = db?.settings || {};
-    const productContext = buildProductContext(db, lastUser?.content || '');
+    let settings;
+    let productContext;
+    try {
+      settings = await getStoreSettings();
+      productContext = await buildProductContext(lastUser?.content || '');
+    } catch (err) {
+      console.error('AI context error:', err);
+      return res.status(500).json({ error: 'Server error.' });
+    }
 
     const system = [
       `You are TechMarket's AI assistant for an online electronics store.`,
@@ -148,4 +178,3 @@ module.exports = (db) => {
 
   return router;
 };
-

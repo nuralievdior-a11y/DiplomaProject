@@ -1,19 +1,56 @@
+# Dependencies
+node_modules/
+*/node_modules/
 **/node_modules/
-**/dist/
 
+# Environment files (NEVER commit secrets!)
+.env
+.env.local
+.env.*.local
+**/.env
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Test/temp files
+testdb.js
+*.test.local.js
+
+# Logs
+*.log
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Uploads (user content)
+backend/uploads/
+
+# Coverage
 coverage/
 .nyc_output/
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-.DS_Store
-Thumbs.db
-
-# Backend secrets (do not commit)
-techmarket/backend/.env
-techmarket/backend/.env.local
-techmarket/backend/.env.development
-techmarket/backend/.env.production
+# Cache
+.cache/
+.parcel-cache/
