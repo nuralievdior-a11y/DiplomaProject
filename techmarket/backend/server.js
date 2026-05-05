@@ -2,8 +2,8 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const path = require('path');
-
-const { pool } = require('./config/database');
+const fs = require('fs');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,15 +16,6 @@ const parseCorsOrigins = (value) =>
 
 const allowedOrigins = parseCorsOrigins(process.env.CORS_ORIGINS);
 
-const parseSettingValue = (value) => {
-  if (typeof value !== 'string') return value;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return value;
-  }
-};
-
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
@@ -36,53 +27,118 @@ app.use(cors({
   credentials: true
 }));
 
+// Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// ✅ Статика (картинки)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes (hammasi PostgreSQL bilan)
-app.use('/api/auth', require('./routes/auth')());
-app.use('/api/products', require('./routes/products')());
-app.use('/api/categories', require('./routes/categories')());
-app.use('/api/cart', require('./routes/cart')());
-app.use('/api/orders', require('./routes/orders')());
-app.use('/api/admin', require('./routes/admin')());
-app.use('/api', require('./routes/reviews')());
-app.use('/api/newsletter', require('./routes/newsletter')());
-app.use('/api/ai', require('./routes/ai')());
+// Database
+const DB_PATH = path.join(__dirname, 'db.json');
+let db;
+
+try {
+  db = JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'));
+  console.log('Database loaded');
+} catch (err) {
+  console.error('DB Error:', err.message);
+  process.exit(1);
+}
+
+const saveDb = () => {
+  try {
+    fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
+  } catch (err) {
+    console.error('Save Error:', err.message);
+  }
+};
+
+// Ensure arrays exist
+if (!db.carts) db.carts = [];
+if (!db.wishlist) db.wishlist = [];
+if (!db.reviews) db.reviews = [];
+if (!db.coupons) db.coupons = [];
+if (!db.orders) db.orders = [];
+if (!db.newsletter) db.newsletter = [];
+if (!db.settings) {
+  db.settings = {
+    storeName: 'TechMarket',
+    storeEmail: 'info@techmarket.com',
+    storePhone: '+998901234567',
+    currency: 'USD',
+    taxRate: 10,
+    shippingRate: 9.99,
+    freeShippingThreshold: 500,
+    socialLinks: {}
+  };
+}
+
+// ✅ Хеширование паролей
+const initPasswords = async () => {
+  const defaultPasswords = {
+    'admin@techmarket.com': 'admin123',
+    'diyor@example.com': 'password123',
+    'john@example.com': 'password123'
+  };
+
+  let changed = false;
+
+  for (const user of db.users) {
+    const defaultPwd = defaultPasswords[user.email];
+
+    if (defaultPwd) {
+      const isHashed =
+        user.password.startsWith('$2a$') ||
+        user.password.startsWith('$2b$');
+
+      if (isHashed) {
+        try {
+          const match = await bcrypt.compare(defaultPwd, user.password);
+          if (match) continue;
+        } catch {}
+      }
+
+      user.password = await bcrypt.hash(defaultPwd, 10);
+      changed = true;
+      console.log(`Password fixed for ${user.email}`);
+    }
+  }
+
+  if (changed) saveDb();
+};
+
+// Routes
+app.use('/api/auth', require('./routes/auth')(db, saveDb));
+app.use('/api/products', require('./routes/products')(db, saveDb));
+app.use('/api/categories', require('./routes/categories')(db, saveDb));
+app.use('/api/cart', require('./routes/cart')(db, saveDb));
+app.use('/api/orders', require('./routes/orders')(db, saveDb));
+app.use('/api/admin', require('./routes/admin')(db, saveDb));
+app.use('/api', require('./routes/reviews')(db, saveDb));
+app.use('/api/newsletter', require('./routes/newsletter')(db, saveDb));
+app.use('/api/ai', require('./routes/ai')(db, saveDb));
 
 // Public settings
-app.get('/api/settings/public', async (req, res) => {
-  try {
-    const r = await pool.query(
-      "SELECT key, value FROM settings WHERE key IN ('storeName','storeEmail','storePhone','currency','freeShippingThreshold','socialLinks')"
-    );
-    const s = {};
-    for (const row of r.rows) {
-      s[row.key] = parseSettingValue(row.value);
-    }
-    res.json({
-      storeName: s.storeName,
-      storeEmail: s.storeEmail,
-      storePhone: s.storePhone,
-      currency: s.currency,
-      freeShippingThreshold: s.freeShippingThreshold,
-      socialLinks: s.socialLinks || {},
-    });
-  } catch (err) {
-    console.error('GET /settings/public:', err);
-    res.status(500).json({ error: 'Server error.' });
-  }
+app.get('/api/settings/public', (req, res) => {
+  const s = db.settings || {};
+  res.json({
+    storeName: s.storeName,
+    storeEmail: s.storeEmail,
+    storePhone: s.storePhone,
+    currency: s.currency,
+    freeShippingThreshold: s.freeShippingThreshold,
+    socialLinks: s.socialLinks
+  });
 });
 
-// Health check
-app.get('/api/health', async (req, res) => {
-  try {
-    await pool.query('SELECT 1');
-    res.json({ status: 'ok', name: 'TechMarket API', version: '2.0.0', database: 'PostgreSQL' });
-  } catch (err) {
-    res.status(503).json({ status: 'error', error: 'Database unreachable' });
-  }
+// Health check (важно для Render)
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    name: 'TechMarket API',
+    version: '1.0.0'
+  });
 });
 
 // Errors
@@ -95,11 +151,17 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Start
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📦 Database: PostgreSQL`);
-  console.log(`👤 Admin: admin@techmarket.com / admin123`);
-});
+// Start server
+initPasswords()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Admin: admin@techmarket.com / admin123`);
+    });
+  })
+  .catch((err) => {
+    console.error('Init error:', err);
+    app.listen(PORT);
+  });
 
 module.exports = app;

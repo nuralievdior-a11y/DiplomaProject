@@ -1,337 +1,90 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { authenticate, isAdmin } = require('../middleware/auth');
-const { query } = require('../config/database');
 
-const mapProduct = (row) => row && {
-  id: row.id,
-  name: row.name,
-  slug: row.slug,
-  description: row.description,
-  shortDescription: row.short_description,
-  price: parseFloat(row.price),
-  comparePrice: row.compare_price ? parseFloat(row.compare_price) : null,
-  categoryId: row.category_id,
-  brand: row.brand,
-  sku: row.sku,
-  stock: row.stock,
-  images: row.images || [],
-  specifications: row.specifications || {},
-  features: row.features || [],
-  rating: parseFloat(row.rating),
-  reviewCount: row.review_count,
-  isFeatured: row.is_featured,
-  isNew: row.is_new,
-  isActive: row.is_active,
-  createdAt: row.created_at,
-};
-
-const mapReview = (row) => row && {
-  id: row.id,
-  productId: row.product_id,
-  userId: row.user_id,
-  userName: row.user_name,
-  rating: row.rating,
-  title: row.title,
-  comment: row.comment,
-  createdAt: row.created_at,
-};
-
-const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-
-module.exports = () => {
+module.exports = (db, saveDb) => {
   const router = express.Router();
 
-  // GET / - filter, search, sort, pagination
-  router.get('/', async (req, res) => {
-    try {
-      const {
-        search, category, brand, minPrice, maxPrice, minRating,
-        featured, isNew, sortBy, sortOrder,
-        page = 1, limit = 12
-      } = req.query;
+  // GET /api/products - with search, filter, sort, pagination
+  router.get('/', (req, res) => {
+    let products = db.products.filter(p => p.isActive);
+    const { search, category, brand, minPrice, maxPrice, minRating, featured, isNew, sortBy, sortOrder, page = 1, limit = 12 } = req.query;
 
-      const where = ['is_active = TRUE'];
-      const params = [];
+    if (search) { const s = search.toLowerCase(); products = products.filter(p => p.name.toLowerCase().includes(s) || p.description.toLowerCase().includes(s) || p.brand.toLowerCase().includes(s)); }
+    if (category) products = products.filter(p => p.categoryId === category);
+    if (brand) { const brands = brand.split(','); products = products.filter(p => brands.includes(p.brand)); }
+    if (minPrice) products = products.filter(p => p.price >= parseFloat(minPrice));
+    if (maxPrice) products = products.filter(p => p.price <= parseFloat(maxPrice));
+    if (minRating) products = products.filter(p => p.rating >= parseFloat(minRating));
+    if (featured === 'true') products = products.filter(p => p.isFeatured);
+    if (isNew === 'true') products = products.filter(p => p.isNew);
 
-      if (search) {
-        params.push(`%${search}%`);
-        const i = params.length;
-        where.push(`(name ILIKE $${i} OR description ILIKE $${i} OR brand ILIKE $${i})`);
-      }
-      if (category) {
-        params.push(category);
-        where.push(`category_id = $${params.length}`);
-      }
-      if (brand) {
-        const brands = brand.split(',');
-        params.push(brands);
-        where.push(`brand = ANY($${params.length})`);
-      }
-      if (minPrice) {
-        params.push(parseFloat(minPrice));
-        where.push(`price >= $${params.length}`);
-      }
-      if (maxPrice) {
-        params.push(parseFloat(maxPrice));
-        where.push(`price <= $${params.length}`);
-      }
-      if (minRating) {
-        params.push(parseFloat(minRating));
-        where.push(`rating >= $${params.length}`);
-      }
-      if (featured === 'true') where.push('is_featured = TRUE');
-      if (isNew === 'true') where.push('is_new = TRUE');
+    const order = sortOrder === 'asc' ? 1 : -1;
+    products.sort((a, b) => {
+      if (sortBy === 'price') return (a.price - b.price) * order;
+      if (sortBy === 'name') return a.name.localeCompare(b.name) * order;
+      if (sortBy === 'rating') return (a.rating - b.rating) * order;
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
 
-      // Sort - whitelist (SQL injection oldini olish)
-      const sortMap = {
-        price: 'price',
-        name: 'name',
-        rating: 'rating',
-      };
-      const orderCol = sortMap[sortBy] || 'created_at';
-      const orderDir = sortOrder === 'asc' ? 'ASC' : 'DESC';
-      const orderBy = sortBy ? `${orderCol} ${orderDir}` : 'created_at DESC';
-
-      const pageNum = parseInt(page) || 1;
-      const limitNum = parseInt(limit) || 12;
-      const offset = (pageNum - 1) * limitNum;
-
-      const whereClause = where.join(' AND ');
-
-      // Total count
-      const countRes = await query(
-        `SELECT COUNT(*) FROM products WHERE ${whereClause}`,
-        params
-      );
-      const total = parseInt(countRes.rows[0].count);
-
-      // Data
-      params.push(limitNum, offset);
-      const dataRes = await query(
-        `SELECT * FROM products WHERE ${whereClause}
-         ORDER BY ${orderBy}
-         LIMIT $${params.length - 1} OFFSET $${params.length}`,
-        params
-      );
-
-      res.json({
-        products: dataRes.rows.map(mapProduct),
-        pagination: {
-          page: pageNum,
-          limit: limitNum,
-          total,
-          totalPages: Math.ceil(total / limitNum),
-          hasNext: offset + limitNum < total,
-          hasPrev: pageNum > 1,
-        },
-      });
-    } catch (err) {
-      console.error('GET /products error:', err);
-      res.status(500).json({ error: 'Server error.' });
-    }
+    const start = (parseInt(page) - 1) * parseInt(limit);
+    const total = products.length;
+    res.json({
+      products: products.slice(start, start + parseInt(limit)),
+      pagination: { page: parseInt(page), limit: parseInt(limit), total, totalPages: Math.ceil(total / parseInt(limit)), hasNext: start + parseInt(limit) < total, hasPrev: parseInt(page) > 1 }
+    });
   });
 
-  // GET /brands
-  router.get('/brands', async (req, res) => {
-    try {
-      const result = await query(
-        `SELECT DISTINCT brand FROM products
-         WHERE is_active = TRUE AND brand IS NOT NULL
-         ORDER BY brand ASC`
-      );
-      res.json(result.rows.map(r => r.brand));
-    } catch (err) {
-      console.error('GET /brands error:', err);
-      res.status(500).json({ error: 'Server error.' });
-    }
+  router.get('/brands', (req, res) => {
+    res.json([...new Set(db.products.filter(p => p.isActive).map(p => p.brand))].sort());
   });
 
-  // GET /featured
-  router.get('/featured', async (req, res) => {
-    try {
-      const result = await query(
-        `SELECT * FROM products WHERE is_active = TRUE AND is_featured = TRUE
-         ORDER BY created_at DESC LIMIT 8`
-      );
-      res.json(result.rows.map(mapProduct));
-    } catch (err) {
-      console.error('GET /featured error:', err);
-      res.status(500).json({ error: 'Server error.' });
-    }
+  router.get('/featured', (req, res) => { res.json(db.products.filter(p => p.isActive && p.isFeatured).slice(0, 8)); });
+  router.get('/new', (req, res) => { res.json(db.products.filter(p => p.isActive && p.isNew).slice(0, 8)); });
+
+  router.get('/deals', (req, res) => {
+    res.json(db.products.filter(p => p.isActive && p.comparePrice > p.price)
+      .sort((a, b) => ((b.comparePrice - b.price) / b.comparePrice) - ((a.comparePrice - a.price) / a.comparePrice)).slice(0, 8));
   });
 
-  // GET /new
-  router.get('/new', async (req, res) => {
-    try {
-      const result = await query(
-        `SELECT * FROM products WHERE is_active = TRUE AND is_new = TRUE
-         ORDER BY created_at DESC LIMIT 8`
-      );
-      res.json(result.rows.map(mapProduct));
-    } catch (err) {
-      console.error('GET /new error:', err);
-      res.status(500).json({ error: 'Server error.' });
-    }
+  router.get('/:id', (req, res) => {
+    const product = db.products.find(p => p.id === req.params.id || p.slug === req.params.id);
+    if (!product) return res.status(404).json({ error: 'Product not found.' });
+    const related = db.products.filter(p => p.categoryId === product.categoryId && p.id !== product.id && p.isActive).slice(0, 4);
+    const reviews = db.reviews.filter(r => r.productId === product.id);
+    res.json({ product, related, reviews });
   });
 
-  // GET /deals
-  router.get('/deals', async (req, res) => {
-    try {
-      const result = await query(
-        `SELECT * FROM products
-         WHERE is_active = TRUE AND compare_price IS NOT NULL AND compare_price > price
-         ORDER BY ((compare_price - price) / compare_price) DESC
-         LIMIT 8`
-      );
-      res.json(result.rows.map(mapProduct));
-    } catch (err) {
-      console.error('GET /deals error:', err);
-      res.status(500).json({ error: 'Server error.' });
-    }
+  router.post('/', authenticate, isAdmin, (req, res) => {
+    const { name, price, categoryId } = req.body;
+    if (!name || !price || !categoryId) return res.status(400).json({ error: 'Name, price, category required.' });
+    const newProduct = {
+      id: `prod_${uuidv4().slice(0, 6)}`,
+      slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+      ...req.body, price: parseFloat(price), comparePrice: parseFloat(req.body.comparePrice) || 0,
+      stock: parseInt(req.body.stock) || 0, rating: 0, reviewCount: 0, isActive: true,
+      createdAt: new Date().toISOString()
+    };
+    db.products.push(newProduct);
+    saveDb();
+    res.status(201).json(newProduct);
   });
 
-  // GET /:id (id yoki slug)
-  router.get('/:id', async (req, res) => {
-    try {
-      const result = await query(
-        'SELECT * FROM products WHERE id = $1 OR slug = $1',
-        [req.params.id]
-      );
-      const product = result.rows[0];
-      if (!product) return res.status(404).json({ error: 'Product not found.' });
-
-      const relatedRes = await query(
-        `SELECT * FROM products
-         WHERE category_id = $1 AND id != $2 AND is_active = TRUE
-         LIMIT 4`,
-        [product.category_id, product.id]
-      );
-
-      const reviewsRes = await query(
-        'SELECT * FROM reviews WHERE product_id = $1 ORDER BY created_at DESC',
-        [product.id]
-      );
-
-      res.json({
-        product: mapProduct(product),
-        related: relatedRes.rows.map(mapProduct),
-        reviews: reviewsRes.rows.map(mapReview),
-      });
-    } catch (err) {
-      console.error('GET /products/:id error:', err);
-      res.status(500).json({ error: 'Server error.' });
-    }
+  router.put('/:id', authenticate, isAdmin, (req, res) => {
+    const idx = db.products.findIndex(p => p.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: 'Product not found.' });
+    db.products[idx] = { ...db.products[idx], ...req.body };
+    if (req.body.name) db.products[idx].slug = req.body.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    saveDb();
+    res.json(db.products[idx]);
   });
 
-  // POST / (admin)
-  router.post('/', authenticate, isAdmin, async (req, res) => {
-    try {
-      const {
-        name, price, categoryId, description, shortDescription,
-        comparePrice, brand, sku, stock, images, specifications,
-        features, isFeatured, isNew
-      } = req.body;
-
-      if (!name || !price || !categoryId)
-        return res.status(400).json({ error: 'Name, price, category required.' });
-
-      const id = `prod_${uuidv4().slice(0, 6)}`;
-      const slug = slugify(name);
-
-      const result = await query(
-        `INSERT INTO products (id, name, slug, description, short_description, price,
-                               compare_price, category_id, brand, sku, stock,
-                               images, specifications, features,
-                               is_featured, is_new, is_active, created_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,TRUE,NOW())
-         RETURNING *`,
-        [id, name, slug, description || null, shortDescription || null,
-         parseFloat(price), comparePrice ? parseFloat(comparePrice) : null,
-         categoryId, brand || null, sku || null, parseInt(stock) || 0,
-         JSON.stringify(images || []),
-         JSON.stringify(specifications || {}),
-         JSON.stringify(features || []),
-         !!isFeatured, !!isNew]
-      );
-      res.status(201).json(mapProduct(result.rows[0]));
-    } catch (err) {
-      console.error('POST /products error:', err);
-      res.status(500).json({ error: 'Server error.' });
-    }
-  });
-
-  // PUT /:id (admin)
-  router.put('/:id', authenticate, isAdmin, async (req, res) => {
-    try {
-      const fieldMap = {
-        name: 'name',
-        description: 'description',
-        shortDescription: 'short_description',
-        price: 'price',
-        comparePrice: 'compare_price',
-        categoryId: 'category_id',
-        brand: 'brand',
-        sku: 'sku',
-        stock: 'stock',
-        images: 'images',
-        specifications: 'specifications',
-        features: 'features',
-        isFeatured: 'is_featured',
-        isNew: 'is_new',
-        isActive: 'is_active',
-      };
-
-      const sets = [];
-      const params = [];
-
-      for (const [jsKey, dbCol] of Object.entries(fieldMap)) {
-        if (req.body[jsKey] !== undefined) {
-          let val = req.body[jsKey];
-          if (['images', 'specifications', 'features'].includes(jsKey))
-            val = JSON.stringify(val);
-          params.push(val);
-          sets.push(`${dbCol} = $${params.length}`);
-        }
-      }
-
-      if (req.body.name) {
-        params.push(slugify(req.body.name));
-        sets.push(`slug = $${params.length}`);
-      }
-
-      if (sets.length === 0)
-        return res.status(400).json({ error: 'No fields to update.' });
-
-      sets.push('updated_at = NOW()');
-      params.push(req.params.id);
-
-      const result = await query(
-        `UPDATE products SET ${sets.join(', ')} WHERE id = $${params.length} RETURNING *`,
-        params
-      );
-
-      if (!result.rows[0]) return res.status(404).json({ error: 'Product not found.' });
-      res.json(mapProduct(result.rows[0]));
-    } catch (err) {
-      console.error('PUT /products/:id error:', err);
-      res.status(500).json({ error: 'Server error.' });
-    }
-  });
-
-  // DELETE /:id (admin) - soft delete
-  router.delete('/:id', authenticate, isAdmin, async (req, res) => {
-    try {
-      const result = await query(
-        'UPDATE products SET is_active = FALSE, updated_at = NOW() WHERE id = $1 RETURNING id',
-        [req.params.id]
-      );
-      if (!result.rows[0]) return res.status(404).json({ error: 'Product not found.' });
-      res.json({ message: 'Product deleted.' });
-    } catch (err) {
-      console.error('DELETE /products/:id error:', err);
-      res.status(500).json({ error: 'Server error.' });
-    }
+  router.delete('/:id', authenticate, isAdmin, (req, res) => {
+    const idx = db.products.findIndex(p => p.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: 'Product not found.' });
+    db.products[idx].isActive = false;
+    saveDb();
+    res.json({ message: 'Product deleted.' });
   });
 
   return router;

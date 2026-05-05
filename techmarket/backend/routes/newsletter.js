@@ -1,41 +1,39 @@
 const express = require('express');
-const { query } = require('../config/database');
+const { v4: uuidv4 } = require('uuid');
 
 const isValidEmail = (value) => {
   const email = String(value || '').trim();
   if (!email) return false;
+  // Simple, pragmatic validation (good enough for demo apps)
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
-module.exports = () => {
+module.exports = (db, saveDb) => {
   const router = express.Router();
 
-  router.post('/subscribe', async (req, res) => {
-    try {
-      const email = String(req.body?.email || '').trim().toLowerCase();
-      if (!isValidEmail(email)) return res.status(400).json({ error: 'Valid email required.' });
+  router.post('/subscribe', (req, res) => {
+    const emailRaw = req.body?.email;
+    const email = String(emailRaw || '').trim().toLowerCase();
 
-      const exists = await query('SELECT id FROM newsletter WHERE email = $1', [email]);
-      if (exists.rows.length) return res.status(400).json({ error: 'Already subscribed.' });
+    if (!isValidEmail(email)) return res.status(400).json({ error: 'Valid email required.' });
 
-      const r = await query(
-        `INSERT INTO newsletter (email, subscribed_at, is_active)
-         VALUES ($1, NOW(), TRUE) RETURNING *`,
-        [email]
-      );
-      res.status(201).json({
-        message: 'Subscribed.',
-        subscription: {
-          id: r.rows[0].id,
-          email: r.rows[0].email,
-          createdAt: r.rows[0].subscribed_at,
-        },
-      });
-    } catch (err) {
-      console.error('POST /newsletter:', err);
-      res.status(500).json({ error: 'Server error.' });
-    }
+    if (!db.newsletter) db.newsletter = [];
+
+    const exists = db.newsletter.some((s) => String(s.email || '').toLowerCase() === email);
+    if (exists) return res.status(400).json({ error: 'Already subscribed.' });
+
+    const subscription = {
+      id: `nl_${uuidv4().slice(0, 6)}`,
+      email,
+      createdAt: new Date().toISOString()
+    };
+
+    db.newsletter.push(subscription);
+    saveDb();
+
+    res.status(201).json({ message: 'Subscribed.', subscription });
   });
 
   return router;
 };
+
