@@ -5,6 +5,7 @@
 -- UUID extension (kelajakda kerak bo'lishi mumkin)
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+
 -- ============================================
 -- 1. USERS
 -- ============================================
