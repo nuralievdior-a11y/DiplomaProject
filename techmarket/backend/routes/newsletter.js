@@ -11,7 +11,7 @@ const isValidEmail = (value) => {
 module.exports = (db, saveDb) => {
   const router = express.Router();
 
-  router.post('/subscribe', (req, res) => {
+  router.post('/subscribe', async (req, res) => {
     const emailRaw = req.body?.email;
     const email = String(emailRaw || '').trim().toLowerCase();
 
@@ -29,11 +29,10 @@ module.exports = (db, saveDb) => {
     };
 
     db.newsletter.push(subscription);
-    saveDb();
+    await saveDb();
 
     res.status(201).json({ message: 'Subscribed.', subscription });
   });
 
   return router;
 };
-

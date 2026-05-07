@@ -42,6 +42,12 @@ cp .env.example .env
 
 Edit `.env` and set your actual `DB_PASSWORD` and `JWT_SECRET`.
 
+By default the app persists demo data to `db.local.json` (ignored by git). To store runtime data in PostgreSQL instead, set:
+
+```bash
+DATA_STORE=postgres
+```
+
 ### 4. Create the database
 
 In pgAdmin or via psql, create a new database:

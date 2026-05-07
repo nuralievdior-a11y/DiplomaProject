@@ -4,9 +4,13 @@ const { authenticate } = require('../middleware/auth');
 module.exports = (db, saveDb) => {
   const router = express.Router();
 
-  const getCart = (userId) => {
+  const getCart = async (userId) => {
     let cart = db.carts.find(c => c.userId === userId);
-    if (!cart) { cart = { userId, items: [], updatedAt: new Date().toISOString() }; db.carts.push(cart); saveDb(); }
+    if (!cart) {
+      cart = { userId, items: [], updatedAt: new Date().toISOString() };
+      db.carts.push(cart);
+      await saveDb();
+    }
     return cart;
   };
 
@@ -22,9 +26,12 @@ module.exports = (db, saveDb) => {
     return { items, subtotal: +subtotal.toFixed(2), shipping: +shipping.toFixed(2), tax: +tax.toFixed(2), total: +(subtotal + shipping + tax).toFixed(2), itemCount: items.reduce((s, i) => s + i.quantity, 0) };
   };
 
-  router.get('/', authenticate, (req, res) => { res.json(enrichCart(getCart(req.user.id))); });
+  router.get('/', authenticate, async (req, res) => {
+    const cart = await getCart(req.user.id);
+    res.json(enrichCart(cart));
+  });
 
-  router.post('/add', authenticate, (req, res) => {
+  router.post('/add', authenticate, async (req, res) => {
     const { productId, quantity = 1 } = req.body;
     const product = db.products.find(p => p.id === productId && p.isActive);
     if (!product) return res.status(404).json({ error: 'Product not found.' });
@@ -42,11 +49,11 @@ module.exports = (db, saveDb) => {
       db.carts[cartIdx].items.push({ productId, quantity });
     }
     db.carts[cartIdx].updatedAt = new Date().toISOString();
-    saveDb();
+    await saveDb();
     res.json({ message: 'Added to cart.', cart: enrichCart(db.carts[cartIdx]) });
   });
 
-  router.put('/update', authenticate, (req, res) => {
+  router.put('/update', authenticate, async (req, res) => {
     const { productId, quantity } = req.body;
     const cartIdx = db.carts.findIndex(c => c.userId === req.user.id);
     if (cartIdx === -1) return res.status(404).json({ error: 'Cart not found.' });
@@ -56,21 +63,24 @@ module.exports = (db, saveDb) => {
       const itemIdx = db.carts[cartIdx].items.findIndex(i => i.productId === productId);
       if (itemIdx > -1) db.carts[cartIdx].items[itemIdx].quantity = quantity;
     }
-    saveDb();
+    await saveDb();
     res.json({ message: 'Cart updated.', cart: enrichCart(db.carts[cartIdx]) });
   });
 
-  router.delete('/remove/:productId', authenticate, (req, res) => {
+  router.delete('/remove/:productId', authenticate, async (req, res) => {
     const cartIdx = db.carts.findIndex(c => c.userId === req.user.id);
     if (cartIdx === -1) return res.status(404).json({ error: 'Cart not found.' });
     db.carts[cartIdx].items = db.carts[cartIdx].items.filter(i => i.productId !== req.params.productId);
-    saveDb();
+    await saveDb();
     res.json({ message: 'Removed.', cart: enrichCart(db.carts[cartIdx]) });
   });
 
-  router.delete('/clear', authenticate, (req, res) => {
+  router.delete('/clear', authenticate, async (req, res) => {
     const cartIdx = db.carts.findIndex(c => c.userId === req.user.id);
-    if (cartIdx > -1) { db.carts[cartIdx].items = []; saveDb(); }
+    if (cartIdx > -1) {
+      db.carts[cartIdx].items = [];
+      await saveDb();
+    }
     res.json({ message: 'Cart cleared.' });
   });
 

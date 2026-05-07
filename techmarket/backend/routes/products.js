@@ -55,7 +55,7 @@ module.exports = (db, saveDb) => {
     res.json({ product, related, reviews });
   });
 
-  router.post('/', authenticate, isAdmin, (req, res) => {
+  router.post('/', authenticate, isAdmin, async (req, res) => {
     const { name, price, categoryId } = req.body;
     if (!name || !price || !categoryId) return res.status(400).json({ error: 'Name, price, category required.' });
     const newProduct = {
@@ -66,24 +66,24 @@ module.exports = (db, saveDb) => {
       createdAt: new Date().toISOString()
     };
     db.products.push(newProduct);
-    saveDb();
+    await saveDb();
     res.status(201).json(newProduct);
   });
 
-  router.put('/:id', authenticate, isAdmin, (req, res) => {
+  router.put('/:id', authenticate, isAdmin, async (req, res) => {
     const idx = db.products.findIndex(p => p.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Product not found.' });
     db.products[idx] = { ...db.products[idx], ...req.body };
     if (req.body.name) db.products[idx].slug = req.body.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    saveDb();
+    await saveDb();
     res.json(db.products[idx]);
   });
 
-  router.delete('/:id', authenticate, isAdmin, (req, res) => {
+  router.delete('/:id', authenticate, isAdmin, async (req, res) => {
     const idx = db.products.findIndex(p => p.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Product not found.' });
     db.products[idx].isActive = false;
-    saveDb();
+    await saveDb();
     res.json({ message: 'Product deleted.' });
   });
 

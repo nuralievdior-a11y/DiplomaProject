@@ -20,7 +20,7 @@ module.exports = (db, saveDb) => {
         createdAt: new Date().toISOString(), isActive: true
       };
       db.users.push(newUser);
-      saveDb();
+      await saveDb();
 
       const token = jwt.sign({ id: newUser.id, email: newUser.email, role: newUser.role }, JWT_SECRET, { expiresIn: '7d' });
       const { password: _, ...safe } = newUser;
@@ -58,7 +58,7 @@ module.exports = (db, saveDb) => {
     if (lastName) db.users[idx].lastName = lastName;
     if (phone) db.users[idx].phone = phone;
     if (avatar !== undefined) db.users[idx].avatar = avatar;
-    saveDb();
+    await saveDb();
     const { password: _, ...safe } = db.users[idx];
     res.json(safe);
   });
@@ -70,25 +70,25 @@ module.exports = (db, saveDb) => {
     if (!(await bcrypt.compare(currentPassword, db.users[idx].password)))
       return res.status(400).json({ error: 'Current password is incorrect.' });
     db.users[idx].password = await bcrypt.hash(newPassword, 10);
-    saveDb();
+    await saveDb();
     res.json({ message: 'Password changed.' });
   });
 
-  router.post('/addresses', authenticate, (req, res) => {
+  router.post('/addresses', authenticate, async (req, res) => {
     const idx = db.users.findIndex(u => u.id === req.user.id);
     if (idx === -1) return res.status(404).json({ error: 'User not found.' });
     const addr = { id: `addr_${uuidv4().slice(0, 8)}`, ...req.body, isDefault: req.body.isDefault || false };
     if (addr.isDefault) db.users[idx].addresses.forEach(a => a.isDefault = false);
     db.users[idx].addresses.push(addr);
-    saveDb();
+    await saveDb();
     res.status(201).json(addr);
   });
 
-  router.delete('/addresses/:id', authenticate, (req, res) => {
+  router.delete('/addresses/:id', authenticate, async (req, res) => {
     const idx = db.users.findIndex(u => u.id === req.user.id);
     if (idx === -1) return res.status(404).json({ error: 'User not found.' });
     db.users[idx].addresses = db.users[idx].addresses.filter(a => a.id !== req.params.id);
-    saveDb();
+    await saveDb();
     res.json({ message: 'Address deleted.' });
   });
 

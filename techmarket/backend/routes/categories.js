@@ -16,7 +16,7 @@ module.exports = (db, saveDb) => {
     res.json({ ...cat, productCount: db.products.filter(p => p.categoryId === cat.id && p.isActive).length });
   });
 
-  router.post('/', authenticate, isAdmin, (req, res) => {
+  router.post('/', authenticate, isAdmin, async (req, res) => {
     const { name } = req.body;
     if (!name) return res.status(400).json({ error: 'Name is required.' });
     const newCat = {
@@ -27,23 +27,23 @@ module.exports = (db, saveDb) => {
       order: Math.max(...db.categories.map(c => c.order), 0) + 1
     };
     db.categories.push(newCat);
-    saveDb();
+    await saveDb();
     res.status(201).json(newCat);
   });
 
-  router.put('/:id', authenticate, isAdmin, (req, res) => {
+  router.put('/:id', authenticate, isAdmin, async (req, res) => {
     const idx = db.categories.findIndex(c => c.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Not found.' });
     db.categories[idx] = { ...db.categories[idx], ...req.body };
-    saveDb();
+    await saveDb();
     res.json(db.categories[idx]);
   });
 
-  router.delete('/:id', authenticate, isAdmin, (req, res) => {
+  router.delete('/:id', authenticate, isAdmin, async (req, res) => {
     const idx = db.categories.findIndex(c => c.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Not found.' });
     db.categories[idx].isActive = false;
-    saveDb();
+    await saveDb();
     res.json({ message: 'Deleted.' });
   });
 

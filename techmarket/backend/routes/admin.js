@@ -13,12 +13,12 @@ module.exports = (db, saveDb) => {
     res.json({ users: users.slice(start, start + limit), pagination: { page, limit, total: users.length, totalPages: Math.ceil(users.length / limit) } });
   });
 
-  router.put('/users/:id', authenticate, isAdmin, (req, res) => {
+  router.put('/users/:id', authenticate, isAdmin, async (req, res) => {
     const idx = db.users.findIndex(u => u.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Not found.' });
     if (req.body.role) db.users[idx].role = req.body.role;
     if (req.body.isActive !== undefined) db.users[idx].isActive = req.body.isActive;
-    saveDb();
+    await saveDb();
     const { password, ...safe } = db.users[idx];
     res.json(safe);
   });
@@ -42,30 +42,30 @@ module.exports = (db, saveDb) => {
 
   // Settings
   router.get('/settings', authenticate, isAdmin, (req, res) => { res.json(db.settings); });
-  router.put('/settings', authenticate, isAdmin, (req, res) => { db.settings = { ...db.settings, ...req.body }; saveDb(); res.json(db.settings); });
+  router.put('/settings', authenticate, isAdmin, async (req, res) => { db.settings = { ...db.settings, ...req.body }; await saveDb(); res.json(db.settings); });
 
   // Reviews management
   router.get('/reviews', authenticate, isAdmin, (req, res) => {
     res.json(db.reviews.map(r => { const p = db.products.find(pr => pr.id === r.productId); return { ...r, productName: p ? p.name : 'Unknown' }; }));
   });
-  router.delete('/reviews/:id', authenticate, isAdmin, (req, res) => {
+  router.delete('/reviews/:id', authenticate, isAdmin, async (req, res) => {
     const idx = db.reviews.findIndex(r => r.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Not found.' });
-    db.reviews.splice(idx, 1); saveDb();
+    db.reviews.splice(idx, 1); await saveDb();
     res.json({ message: 'Deleted.' });
   });
 
   // Coupons
   router.get('/coupons', authenticate, isAdmin, (req, res) => { res.json(db.coupons); });
-  router.post('/coupons', authenticate, isAdmin, (req, res) => {
+  router.post('/coupons', authenticate, isAdmin, async (req, res) => {
     const cpn = { id: `cpn_${Date.now()}`, code: req.body.code.toUpperCase(), type: req.body.type || 'percentage', value: parseFloat(req.body.value), minOrder: parseFloat(req.body.minOrder) || 0, maxDiscount: parseFloat(req.body.maxDiscount) || 1000, usageLimit: parseInt(req.body.usageLimit) || 100, usedCount: 0, isActive: true, expiresAt: req.body.expiresAt };
-    db.coupons.push(cpn); saveDb();
+    db.coupons.push(cpn); await saveDb();
     res.status(201).json(cpn);
   });
-  router.delete('/coupons/:id', authenticate, isAdmin, (req, res) => {
+  router.delete('/coupons/:id', authenticate, isAdmin, async (req, res) => {
     const idx = db.coupons.findIndex(c => c.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Not found.' });
-    db.coupons.splice(idx, 1); saveDb();
+    db.coupons.splice(idx, 1); await saveDb();
     res.json({ message: 'Deleted.' });
   });
 

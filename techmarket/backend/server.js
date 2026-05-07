@@ -2,8 +2,8 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const path = require('path');
-const fs = require('fs');
 const bcrypt = require('bcryptjs');
+const { createStateStore, defaultMode } = require('./storage/stateStore');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -34,70 +34,25 @@ app.use(express.urlencoded({ extended: true }));
 // ✅ Static files (uploads)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Database (JSON)
-// IMPORTANT:
-// - `db.json` is treated as a seed/template (tracked in git)
-// - runtime changes are persisted to `db.local.json` (ignored by git) or `DB_JSON_PATH`
+// State store
+// - `DATA_STORE=json` (default): persists runtime state to `db.local.json` (ignored by git)
+// - `DATA_STORE=postgres`: persists runtime state to PostgreSQL in `app_state` table
 const DB_TEMPLATE_PATH = path.join(__dirname, 'db.json');
 const DB_LOCAL_PATH = path.join(__dirname, 'db.local.json');
 const DB_RUNTIME_PATH = process.env.DB_JSON_PATH
   ? path.resolve(process.env.DB_JSON_PATH)
   : DB_LOCAL_PATH;
 
-const ensureRuntimeDbFile = () => {
-  if (fs.existsSync(DB_RUNTIME_PATH)) return;
-
-  // If a custom path is provided, ensure directory exists.
-  const dir = path.dirname(DB_RUNTIME_PATH);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-
-  // Initialize runtime DB from the template.
-  fs.copyFileSync(DB_TEMPLATE_PATH, DB_RUNTIME_PATH);
-};
-
-const readDb = () => {
-  ensureRuntimeDbFile();
-  return JSON.parse(fs.readFileSync(DB_RUNTIME_PATH, 'utf-8'));
-};
-
+const stateStore = createStateStore({ templatePath: DB_TEMPLATE_PATH, runtimePath: DB_RUNTIME_PATH });
 let db;
-try {
-  db = readDb();
-  console.log(`Database loaded: ${DB_RUNTIME_PATH}`);
-} catch (err) {
-  console.error('DB Error:', err.message);
-  process.exit(1);
-}
 
-const saveDb = () => {
+const saveDb = async () => {
   try {
-    const tmp = `${DB_RUNTIME_PATH}.tmp`;
-    fs.writeFileSync(tmp, JSON.stringify(db, null, 2));
-    fs.renameSync(tmp, DB_RUNTIME_PATH);
+    await stateStore.save(db);
   } catch (err) {
     console.error('Save Error:', err.message);
   }
 };
-
-// Ensure arrays exist
-if (!db.carts) db.carts = [];
-if (!db.wishlist) db.wishlist = [];
-if (!db.reviews) db.reviews = [];
-if (!db.coupons) db.coupons = [];
-if (!db.orders) db.orders = [];
-if (!db.newsletter) db.newsletter = [];
-if (!db.settings) {
-  db.settings = {
-    storeName: 'TechMarket',
-    storeEmail: 'info@techmarket.com',
-    storePhone: '+998901234567',
-    currency: 'USD',
-    taxRate: 10,
-    shippingRate: 9.99,
-    freeShippingThreshold: 500,
-    socialLinks: {}
-  };
-}
 
 // ✅ Password hashing
 const initPasswords = async () => {
@@ -130,32 +85,34 @@ const initPasswords = async () => {
     }
   }
 
-  if (changed) saveDb();
+  if (changed) await saveDb();
 };
 
-// Routes
-app.use('/api/auth', require('./routes/auth')(db, saveDb));
-app.use('/api/products', require('./routes/products')(db, saveDb));
-app.use('/api/categories', require('./routes/categories')(db, saveDb));
-app.use('/api/cart', require('./routes/cart')(db, saveDb));
-app.use('/api/orders', require('./routes/orders')(db, saveDb));
-app.use('/api/admin', require('./routes/admin')(db, saveDb));
-app.use('/api', require('./routes/reviews')(db, saveDb));
-app.use('/api/newsletter', require('./routes/newsletter')(db, saveDb));
-app.use('/api/ai', require('./routes/ai')(db, saveDb));
+const registerRoutes = () => {
+  // Routes
+  app.use('/api/auth', require('./routes/auth')(db, saveDb));
+  app.use('/api/products', require('./routes/products')(db, saveDb));
+  app.use('/api/categories', require('./routes/categories')(db, saveDb));
+  app.use('/api/cart', require('./routes/cart')(db, saveDb));
+  app.use('/api/orders', require('./routes/orders')(db, saveDb));
+  app.use('/api/admin', require('./routes/admin')(db, saveDb));
+  app.use('/api', require('./routes/reviews')(db, saveDb));
+  app.use('/api/newsletter', require('./routes/newsletter')(db, saveDb));
+  app.use('/api/ai', require('./routes/ai')(db, saveDb));
 
-// Public settings
-app.get('/api/settings/public', (req, res) => {
-  const s = db.settings || {};
-  res.json({
-    storeName: s.storeName,
-    storeEmail: s.storeEmail,
-    storePhone: s.storePhone,
-    currency: s.currency,
-    freeShippingThreshold: s.freeShippingThreshold,
-    socialLinks: s.socialLinks
+  // Public settings
+  app.get('/api/settings/public', (req, res) => {
+    const s = db.settings || {};
+    res.json({
+      storeName: s.storeName,
+      storeEmail: s.storeEmail,
+      storePhone: s.storePhone,
+      currency: s.currency,
+      freeShippingThreshold: s.freeShippingThreshold,
+      socialLinks: s.socialLinks
+    });
   });
-});
+};
 
 // Health check (important for Render)
 app.get('/api/health', (req, res) => {
@@ -177,16 +134,27 @@ app.use((req, res) => {
 });
 
 // Start server
-initPasswords()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`Admin: admin@techmarket.com / admin123`);
-    });
-  })
-  .catch((err) => {
-    console.error('Init error:', err);
-    app.listen(PORT);
+const start = async () => {
+  try {
+    db = await stateStore.load();
+    console.log(`State store: ${defaultMode()} (${stateStore.mode === 'json' ? stateStore.runtimePath : 'postgres'})`);
+  } catch (err) {
+    console.error('DB Error:', err.message);
+    process.exit(1);
+  }
+
+  registerRoutes();
+
+  await initPasswords();
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Admin: admin@techmarket.com / admin123`);
   });
+};
+
+start().catch((err) => {
+  console.error('Init error:', err);
+  app.listen(PORT);
+});
 
 module.exports = app;

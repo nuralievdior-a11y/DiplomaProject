@@ -44,7 +44,7 @@ module.exports = (db, saveDb) => {
     res.json({ ...order, userName: user ? `${user.firstName} ${user.lastName}` : 'Unknown' });
   });
 
-  router.post('/', authenticate, (req, res) => {
+  router.post('/', authenticate, async (req, res) => {
     const { shippingAddress, paymentMethod, couponCode, payment } = req.body;
     if (!shippingAddress || !paymentMethod) return res.status(400).json({ error: 'Address and payment required.' });
     const cart = db.carts.find(c => c.userId === req.user.id);
@@ -87,11 +87,11 @@ module.exports = (db, saveDb) => {
     orderItems.forEach(i => { const pi = db.products.findIndex(p => p.id === i.productId); if (pi > -1) db.products[pi].stock -= i.quantity; });
     const ci = db.carts.findIndex(c => c.userId === req.user.id); if (ci > -1) db.carts[ci].items = [];
     db.orders.push(order);
-    saveDb();
+    await saveDb();
     res.status(201).json(order);
   });
 
-  router.put('/:id/status', authenticate, isAdmin, (req, res) => {
+  router.put('/:id/status', authenticate, isAdmin, async (req, res) => {
     const { status, reason } = req.body;
     if (!['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'delivery_issue'].includes(status))
       return res.status(400).json({ error: 'Invalid status.' });
@@ -106,7 +106,7 @@ module.exports = (db, saveDb) => {
     if (status === 'delivery_issue') {
       db.orders[idx].deliveryIssue = { reason: String(reason), reportedAt: new Date().toISOString() };
     }
-    saveDb();
+    await saveDb();
     res.json(db.orders[idx]);
   });
 
