@@ -5,19 +5,38 @@ const { authenticate, isAdmin } = require('../middleware/auth');
 module.exports = (db, saveDb) => {
   const router = express.Router();
 
+  const applyProductFilters = (products, query) => {
+    let filtered = products;
+    const { search, category, brand, minPrice, maxPrice, minRating, featured, isNew } = query;
+
+    if (search) {
+      const s = String(search).toLowerCase();
+      filtered = filtered.filter(p =>
+        String(p.name || '').toLowerCase().includes(s) ||
+        String(p.description || '').toLowerCase().includes(s) ||
+        String(p.brand || '').toLowerCase().includes(s)
+      );
+    }
+    if (category) filtered = filtered.filter(p => p.categoryId === category);
+    if (brand) {
+      const brands = String(brand).split(',').map(b => b.trim()).filter(Boolean);
+      filtered = filtered.filter(p => brands.includes(p.brand));
+    }
+    if (minPrice) filtered = filtered.filter(p => p.price >= parseFloat(minPrice));
+    if (maxPrice) filtered = filtered.filter(p => p.price <= parseFloat(maxPrice));
+    if (minRating) filtered = filtered.filter(p => p.rating >= parseFloat(minRating));
+    if (featured === 'true') filtered = filtered.filter(p => p.isFeatured);
+    if (isNew === 'true') filtered = filtered.filter(p => p.isNew);
+
+    return filtered;
+  };
+
   // GET /api/products - with search, filter, sort, pagination
   router.get('/', (req, res) => {
     let products = db.products.filter(p => p.isActive);
     const { search, category, brand, minPrice, maxPrice, minRating, featured, isNew, sortBy, sortOrder, page = 1, limit = 12 } = req.query;
 
-    if (search) { const s = search.toLowerCase(); products = products.filter(p => p.name.toLowerCase().includes(s) || p.description.toLowerCase().includes(s) || p.brand.toLowerCase().includes(s)); }
-    if (category) products = products.filter(p => p.categoryId === category);
-    if (brand) { const brands = brand.split(','); products = products.filter(p => brands.includes(p.brand)); }
-    if (minPrice) products = products.filter(p => p.price >= parseFloat(minPrice));
-    if (maxPrice) products = products.filter(p => p.price <= parseFloat(maxPrice));
-    if (minRating) products = products.filter(p => p.rating >= parseFloat(minRating));
-    if (featured === 'true') products = products.filter(p => p.isFeatured);
-    if (isNew === 'true') products = products.filter(p => p.isNew);
+    products = applyProductFilters(products, { search, category, brand, minPrice, maxPrice, minRating, featured, isNew });
 
     const order = sortOrder === 'asc' ? 1 : -1;
     products.sort((a, b) => {
@@ -36,7 +55,8 @@ module.exports = (db, saveDb) => {
   });
 
   router.get('/brands', (req, res) => {
-    res.json([...new Set(db.products.filter(p => p.isActive).map(p => p.brand))].sort());
+    const products = applyProductFilters(db.products.filter(p => p.isActive), req.query);
+    res.json([...new Set(products.map(p => p.brand).filter(Boolean))].sort());
   });
 
   router.get('/featured', (req, res) => { res.json(db.products.filter(p => p.isActive && p.isFeatured).slice(0, 8)); });

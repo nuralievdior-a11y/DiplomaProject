@@ -53,6 +53,24 @@ export default function Products() {
   }, []);
 
   useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const q = {};
+        if (searchQ) q.search = searchQ;
+        if (categoryQ) q.category = categoryQ;
+        if (minPrice) q.minPrice = minPrice;
+        if (maxPrice) q.maxPrice = maxPrice;
+        const res = await api.get('/products/brands', { params: q });
+        setBrands(Array.isArray(res.data) ? res.data : []);
+      } catch {
+        setBrands([]);
+      }
+    };
+    fetchBrands();
+    // Intentionally excludes `brandQ` so selecting a brand doesn't shrink the list.
+  }, [searchQ, categoryQ, minPrice, maxPrice]);
+
+  useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
@@ -71,9 +89,6 @@ export default function Products() {
         const res = await api.get('/products', { params: q });
         setProducts(res.data.products || res.data);
         setPagination(res.data.pagination || {});
-        // Extract unique brands
-        const allBrands = (res.data.products || res.data).map(p => p.brand).filter(Boolean);
-        setBrands([...new Set(allBrands)]);
       } catch { }
       setLoading(false);
     };
