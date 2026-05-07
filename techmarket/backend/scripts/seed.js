@@ -2,10 +2,16 @@ const fs = require('fs');
 const path = require('path');
 const { pool } = require('../config/database');
 
-const DB_JSON = path.join(__dirname, '..', 'db.json');
+// Prefer runtime JSON DB if present (so seed can include any new users/orders),
+// fallback to the repo template db.json.
+const DB_JSON = process.env.DB_JSON_PATH
+  ? path.resolve(process.env.DB_JSON_PATH)
+  : path.join(__dirname, '..', 'db.local.json');
+const DB_FALLBACK = path.join(__dirname, '..', 'db.json');
 
 async function seed() {
-  const data = JSON.parse(fs.readFileSync(DB_JSON, 'utf-8'));
+  const sourcePath = fs.existsSync(DB_JSON) ? DB_JSON : DB_FALLBACK;
+  const data = JSON.parse(fs.readFileSync(sourcePath, 'utf-8'));
   const client = await pool.connect();
 
   try {
