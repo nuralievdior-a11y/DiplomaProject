@@ -25,6 +25,10 @@ export default function ScrollToTop() {
       }
     }
 
+    // Don't scroll on query-string-only changes (e.g. filters/pagination on the same page).
+    // Scroll only when the path changes (real navigation).
+    if (prev && prev.pathname === location.pathname) return;
+
     window.scrollTo({ top: 0, left: 0, behavior });
   }, [location.pathname, location.search, location.hash]);
 

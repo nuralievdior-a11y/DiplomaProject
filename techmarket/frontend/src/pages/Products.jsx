@@ -175,7 +175,7 @@ export default function Products() {
               {categories.map(cat => (
                 <button key={cat.id} onClick={() => updateParam('category', cat.id)}
                   className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all flex items-center justify-between ${categoryQ === cat.id ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-neutral-600 hover:bg-neutral-50'}`}>
-                  <span className="flex items-center gap-2">{cat.icon && <span>{cat.icon}</span>} {cat.name}</span>
+                  <span className="flex items-center gap-2">{cat.name}</span>
                   <span className="text-xs text-neutral-400">{cat.productCount || 0}</span>
                 </button>
               ))}
