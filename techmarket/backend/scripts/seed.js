@@ -10,7 +10,7 @@ async function seed() {
 
   try {
     await client.query('BEGIN');
-    console.log('🚀 Seed boshlandi...\n');
+    console.log('🚀 Seed started...\n');
 
     // ============ 1. USERS ============
     console.log('📥 Users...');
@@ -23,7 +23,7 @@ async function seed() {
          u.phone || null, u.avatar || null, u.isActive !== false, u.createdAt || new Date()]
       );
 
-      // Manzillar
+      // Addresses
       for (const a of u.addresses || []) {
         await client.query(
           `INSERT INTO addresses (id, user_id, label, street, city, state, zip_code, country, is_default)
@@ -34,11 +34,11 @@ async function seed() {
         );
       }
     }
-    console.log(`   ✅ ${data.users?.length || 0} ta user`);
+    console.log(`   ✅ ${data.users?.length || 0} users`);
 
     // ============ 2. CATEGORIES ============
     console.log('📥 Categories...');
-    // Avval parent_id=null bo'lganlar, keyin bolalar (FK uchun)
+    // Insert parents first, then children (for FK constraints)
     const cats = data.categories || [];
     const sortedCats = [...cats].sort((a, b) => (a.parentId ? 1 : 0) - (b.parentId ? 1 : 0));
     for (const c of sortedCats) {
@@ -50,7 +50,7 @@ async function seed() {
          c.parentId || null, c.isActive !== false, c.order || 0]
       );
     }
-    console.log(`   ✅ ${cats.length} ta category`);
+    console.log(`   ✅ ${cats.length} categories`);
 
     // ============ 3. PRODUCTS ============
     console.log('📥 Products...');
@@ -72,7 +72,7 @@ async function seed() {
          p.createdAt || new Date()]
       );
     }
-    console.log(`   ✅ ${data.products?.length || 0} ta product`);
+    console.log(`   ✅ ${data.products?.length || 0} products`);
 
     // ============ 4. CARTS + CART_ITEMS ============
     console.log('📥 Carts...');
@@ -94,7 +94,7 @@ async function seed() {
         cartItemsCount++;
       }
     }
-    console.log(`   ✅ ${data.carts?.length || 0} ta cart, ${cartItemsCount} ta item`);
+    console.log(`   ✅ ${data.carts?.length || 0} carts, ${cartItemsCount} items`);
 
     // ============ 5. ORDERS + ORDER_ITEMS ============
     console.log('📥 Orders...');
@@ -122,7 +122,7 @@ async function seed() {
         orderItemsCount++;
       }
     }
-    console.log(`   ✅ ${data.orders?.length || 0} ta order, ${orderItemsCount} ta item`);
+    console.log(`   ✅ ${data.orders?.length || 0} orders, ${orderItemsCount} items`);
 
     // ============ 6. REVIEWS ============
     console.log('📥 Reviews...');
@@ -135,7 +135,7 @@ async function seed() {
          r.rating, r.title || null, r.comment || null, r.createdAt || new Date()]
       );
     }
-    console.log(`   ✅ ${data.reviews?.length || 0} ta review`);
+    console.log(`   ✅ ${data.reviews?.length || 0} reviews`);
 
     // ============ 7. COUPONS ============
     console.log('📥 Coupons...');
@@ -149,7 +149,7 @@ async function seed() {
          c.usageLimit || null, c.usedCount || 0, c.isActive !== false, c.expiresAt || null]
       );
     }
-    console.log(`   ✅ ${data.coupons?.length || 0} ta coupon`);
+    console.log(`   ✅ ${data.coupons?.length || 0} coupons`);
 
     // ============ 8. WISHLIST ============
     console.log('📥 Wishlist...');
@@ -158,10 +158,10 @@ async function seed() {
         `INSERT INTO wishlist (user_id, product_id, added_at)
          VALUES ($1,$2,$3)
          ON CONFLICT (user_id, product_id) DO NOTHING`,
-        [w.userId, w.productId, w.addedAt || new Date()]
+         [w.userId, w.productId, w.addedAt || new Date()]
       );
     }
-    console.log(`   ✅ ${data.wishlist?.length || 0} ta wishlist item`);
+    console.log(`   ✅ ${data.wishlist?.length || 0} wishlist items`);
 
     // ============ 9. NEWSLETTER ============
     console.log('📥 Newsletter...');
@@ -170,10 +170,10 @@ async function seed() {
         `INSERT INTO newsletter (email, subscribed_at, is_active)
          VALUES ($1,$2,$3)
          ON CONFLICT (email) DO NOTHING`,
-        [n.email, n.subscribedAt || new Date(), n.isActive !== false]
+         [n.email, n.subscribedAt || new Date(), n.isActive !== false]
       );
     }
-    console.log(`   ✅ ${data.newsletter?.length || 0} ta newsletter`);
+    console.log(`   ✅ ${data.newsletter?.length || 0} newsletter subscriptions`);
 
     // ============ 10. SETTINGS ============
     console.log('📥 Settings...');
@@ -187,13 +187,13 @@ async function seed() {
         );
       }
     }
-    console.log(`   ✅ settings ko'chirildi`);
+    console.log('   ✅ settings migrated');
 
     await client.query('COMMIT');
-    console.log('\n🎉 Seed muvaffaqiyatli tugadi!');
+    console.log('\n🎉 Seed completed successfully!');
   } catch (err) {
     await client.query('ROLLBACK');
-    console.error('\n❌ Seed xatolik:', err.message);
+    console.error('\n❌ Seed error:', err.message);
     console.error(err);
     throw err;
   } finally {

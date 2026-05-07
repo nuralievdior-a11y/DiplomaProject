@@ -13,11 +13,11 @@ const pool = new Pool({
 });
 
 pool.on('connect', () => {
-  console.log('✅ PostgreSQL ga ulandi');
+  console.log('✅ Connected to PostgreSQL');
 });
 
 pool.on('error', (err) => {
-  console.error('PostgreSQL pool xatosi:', err);
+  console.error('PostgreSQL pool error:', err);
 });
 
 const query = (text, params) => pool.query(text, params);
