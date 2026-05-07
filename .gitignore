@@ -17,3 +17,6 @@ techmarket/backend/.env
 techmarket/backend/.env.local
 techmarket/backend/.env.development
 techmarket/backend/.env.production
+
+# Local JSON DB (runtime data)
+techmarket/backend/db.local.json

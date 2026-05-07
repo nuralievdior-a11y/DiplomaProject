@@ -34,13 +34,36 @@ app.use(express.urlencoded({ extended: true }));
 // ✅ Static files (uploads)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Database
-const DB_PATH = path.join(__dirname, 'db.json');
-let db;
+// Database (JSON)
+// IMPORTANT:
+// - `db.json` is treated as a seed/template (tracked in git)
+// - runtime changes are persisted to `db.local.json` (ignored by git) or `DB_JSON_PATH`
+const DB_TEMPLATE_PATH = path.join(__dirname, 'db.json');
+const DB_LOCAL_PATH = path.join(__dirname, 'db.local.json');
+const DB_RUNTIME_PATH = process.env.DB_JSON_PATH
+  ? path.resolve(process.env.DB_JSON_PATH)
+  : DB_LOCAL_PATH;
 
+const ensureRuntimeDbFile = () => {
+  if (fs.existsSync(DB_RUNTIME_PATH)) return;
+
+  // If a custom path is provided, ensure directory exists.
+  const dir = path.dirname(DB_RUNTIME_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+  // Initialize runtime DB from the template.
+  fs.copyFileSync(DB_TEMPLATE_PATH, DB_RUNTIME_PATH);
+};
+
+const readDb = () => {
+  ensureRuntimeDbFile();
+  return JSON.parse(fs.readFileSync(DB_RUNTIME_PATH, 'utf-8'));
+};
+
+let db;
 try {
-  db = JSON.parse(fs.readFileSync(DB_PATH, 'utf-8'));
-  console.log('Database loaded');
+  db = readDb();
+  console.log(`Database loaded: ${DB_RUNTIME_PATH}`);
 } catch (err) {
   console.error('DB Error:', err.message);
   process.exit(1);
@@ -48,7 +71,9 @@ try {
 
 const saveDb = () => {
   try {
-    fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
+    const tmp = `${DB_RUNTIME_PATH}.tmp`;
+    fs.writeFileSync(tmp, JSON.stringify(db, null, 2));
+    fs.renameSync(tmp, DB_RUNTIME_PATH);
   } catch (err) {
     console.error('Save Error:', err.message);
   }
