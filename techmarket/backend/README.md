@@ -42,6 +42,13 @@ cp .env.example .env
 
 Edit `.env` and set your actual `DB_PASSWORD` and `JWT_SECRET`.
 
+To enable the AI chat, set your Google AI Studio key:
+
+```bash
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
+```
+
 By default the app persists demo data to `db.local.json` (ignored by git). To store runtime data in PostgreSQL instead, set:
 
 ```bash

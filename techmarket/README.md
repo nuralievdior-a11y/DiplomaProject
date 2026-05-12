@@ -54,9 +54,11 @@ Optional environment variables:
 - `JWT_SECRET` (falls back to a default value in code)
 - `CORS_ORIGINS` (comma-separated list of allowed origins; if not set, API allows any origin)
 - AI chat (optional):
-  - `OPENAI_API_KEY` (required to enable `/api/ai/chat`)
-  - `OPENAI_MODEL` (default `gpt-4.1`)
-  - `OPENAI_BASE_URL` (default `https://api.openai.com/v1`)
+  - `GEMINI_API_KEY` (required to enable `/api/ai/chat`; Google AI Studio key)
+  - `GEMINI_MODEL` (default `gemini-2.5-flash`)
+  - `GEMINI_BASE_URL` (default `https://generativelanguage.googleapis.com/v1beta`)
+  - `GEMINI_TEMPERATURE` (default `0.35`)
+  - `GEMINI_MAX_OUTPUT_TOKENS` (default `700`)
 
 You can place these in `techmarket/backend/.env` (see `techmarket/backend/.env.example`). The backend loads it via `dotenv`.
 
