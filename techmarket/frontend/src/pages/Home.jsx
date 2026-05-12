@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Truck, ShieldCheck, Headphones, RotateCcw, Zap, ChevronRight, Star, Sparkles, Timer, TrendingUp } from 'lucide-react';
+import { ArrowRight, Truck, ShieldCheck, Headphones, RotateCcw, Zap, ChevronRight, Star, Sparkles, Timer, TrendingUp, Smartphone, Laptop, Tablet, Watch, Camera, Gamepad2, Cable } from 'lucide-react';
 import api from '../api';
 import ProductCard from '../components/ProductCard';
 
@@ -16,6 +16,24 @@ const features = [
   { icon: Headphones, title: '24/7 Support', desc: 'Expert assistance' },
   { icon: RotateCcw, title: 'Easy Returns', desc: '30 day returns' }
 ];
+
+const CATEGORY_ICON_MAP = {
+  smartphone: Smartphone,
+  laptop: Laptop,
+  laptops: Laptop,
+  tablet: Tablet,
+  tablets: Tablet,
+  headphones: Headphones,
+  watch: Watch,
+  smartwatch: Watch,
+  smartwatches: Watch,
+  camera: Camera,
+  cameras: Camera,
+  gamepad: Gamepad2,
+  gaming: Gamepad2,
+  cable: Cable,
+  accessories: Cable
+};
 
 export default function Home() {
   const [featured, setFeatured] = useState([]);
@@ -138,17 +156,21 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {categories.map((cat, i) => (
-            <Link key={cat.id} to={`/products?category=${cat.id}`} state={{ scrollToTop: true }}
-              className={`group relative bg-white rounded-2xl border border-neutral-100 p-6 hover:border-brand-200 hover:shadow-lg hover:shadow-brand-500/5 transition-all duration-300 animate-fade-up stagger-${Math.min(i + 1, 4)}`}>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <span className="text-2xl">{cat.icon || '📱'}</span>
-              </div>
-              <h3 className="font-semibold text-neutral-800 text-sm group-hover:text-brand-600 transition-colors">{cat.name}</h3>
-              <p className="text-xs text-neutral-400 mt-1">{cat.productCount || 0} products</p>
-              <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-300 group-hover:text-brand-500 group-hover:translate-x-1 transition-all" />
-            </Link>
-          ))}
+          {categories.map((cat, i) => {
+            const iconKey = String(cat.icon || cat.slug || '').toLowerCase();
+            const Icon = CATEGORY_ICON_MAP[iconKey] || null;
+            return (
+              <Link key={cat.id} to={`/products?category=${cat.id}`} state={{ scrollToTop: true }}
+                className={`group relative bg-white rounded-2xl border border-neutral-100 p-6 hover:border-brand-200 hover:shadow-lg hover:shadow-brand-500/5 transition-all duration-300 animate-fade-up stagger-${Math.min(i + 1, 4)}`}>
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform overflow-hidden">
+                  {Icon ? <Icon className="w-6 h-6 text-brand-600" /> : <Zap className="w-6 h-6 text-brand-600" />}
+                </div>
+                <h3 className="font-semibold text-neutral-800 text-sm group-hover:text-brand-600 transition-colors truncate">{cat.name}</h3>
+                <p className="text-xs text-neutral-400 mt-1">{cat.productCount || 0} products</p>
+                <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-300 group-hover:text-brand-500 group-hover:translate-x-1 transition-all" />
+              </Link>
+            );
+          })}
         </div>
       </section>
 
