@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, Phone, Eye, EyeOff, Zap, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { getPasswordStrength } from '../utils/passwordStrength';
 
 export default function Register() {
   const { register } = useAuth();
@@ -10,6 +11,7 @@ export default function Register() {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirm: '' });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+  const strength = getPasswordStrength(form.password);
 
   const update = (field, value) => setForm(f => ({ ...f, [field]: value }));
 
@@ -17,6 +19,7 @@ export default function Register() {
     e.preventDefault();
     if (!form.firstName || !form.lastName || !form.email || !form.password) { toast.error('Please fill in all required fields'); return; }
     if (form.password.length < 6) { toast.error('Password must be at least 6 characters'); return; }
+    if (strength.score <= 1) { toast.error('Password is too weak'); return; }
     if (form.password !== form.confirm) { toast.error('Passwords do not match'); return; }
     setLoading(true);
     try {
@@ -89,6 +92,27 @@ export default function Register() {
                   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+
+              {!!form.password && (
+                <div className="mt-2" aria-live="polite">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-neutral-400">Password strength</span>
+                    <span className={`${strength.textClass} font-semibold`}>{strength.label}</span>
+                  </div>
+                  <div className="mt-1 h-1.5 w-full rounded-full bg-neutral-200 overflow-hidden">
+                    <div
+                      className={`h-full ${strength.barClass} rounded-full transition-all duration-200`}
+                      style={{ width: `${strength.percent}%` }}
+                    />
+                  </div>
+                  {strength.hints?.length > 0 && (
+                    <div className="mt-2 text-xs text-neutral-500">
+                      <span className="font-semibold text-neutral-600">Tips:</span>{' '}
+                      {strength.hints.slice(0, 3).join(' • ')}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div>
