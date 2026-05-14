@@ -108,6 +108,61 @@ test('cart: out-of-stock add returns user-friendly error and does not mutate car
   assert.equal(db.carts.length, 0);
 });
 
+test('cart: applying coupon persists it and updates totals', async () => {
+  const db = createBaseDb();
+  db.coupons.push({
+    id: 'cpn_welcome10',
+    code: 'WELCOME10',
+    type: 'percentage',
+    value: 10,
+    minOrder: 50,
+    maxDiscount: 100,
+    usageLimit: 100,
+    usedCount: 0,
+    isActive: true,
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+  });
+
+  let saveCalls = 0;
+  const app = createTestApp({ db, saveDb: () => { saveCalls++; } });
+  const auth = createAuthHeader({ id: 'usr_customer', role: 'customer' });
+
+  await withServer(app, async (baseUrl) => {
+    await jsonFetch(`${baseUrl}/api/cart/add`, {
+      method: 'POST',
+      headers: { Authorization: auth },
+      body: { productId: 'prod_1', quantity: 1 }
+    });
+
+    const apply = await jsonFetch(`${baseUrl}/api/cart/coupon`, {
+      method: 'POST',
+      headers: { Authorization: auth },
+      body: { code: 'welcome10' }
+    });
+
+    assert.equal(apply.status, 200);
+    assert.equal(apply.json.couponCode, 'WELCOME10');
+    assert.equal(apply.json.subtotal, 1000);
+    assert.equal(apply.json.discount, 100);
+    assert.equal(apply.json.tax, 90);
+    assert.equal(apply.json.total, 990);
+
+    const remove = await jsonFetch(`${baseUrl}/api/cart/coupon`, {
+      method: 'DELETE',
+      headers: { Authorization: auth }
+    });
+
+    assert.equal(remove.status, 200);
+    assert.equal(remove.json.couponCode, null);
+    assert.equal(remove.json.discount, 0);
+    assert.equal(remove.json.tax, 100);
+    assert.equal(remove.json.total, 1100);
+  });
+
+  assert.equal(db.carts[0].couponCode, null);
+  assert.equal(saveCalls, 3);
+});
+
 test('orders: creates order, decrements stock, clears cart (data integrity)', async () => {
   const db = createBaseDb();
   db.carts.push({ userId: 'usr_customer', items: [{ productId: 'prod_1', quantity: 2 }], updatedAt: new Date().toISOString() });
@@ -138,6 +193,46 @@ test('orders: creates order, decrements stock, clears cart (data integrity)', as
   assert.equal(db.orders.length, 1);
   assert.equal(db.products[0].stock, 3);
   assert.equal(db.carts[0].items.length, 0);
+});
+
+test('orders: applies cart coupon when not provided in request body', async () => {
+  const db = createBaseDb();
+  db.coupons.push({
+    id: 'cpn_welcome10',
+    code: 'WELCOME10',
+    type: 'percentage',
+    value: 10,
+    minOrder: 50,
+    maxDiscount: 100,
+    usageLimit: 100,
+    usedCount: 0,
+    isActive: true,
+    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+  });
+  db.carts.push({ userId: 'usr_customer', items: [{ productId: 'prod_1', quantity: 1 }], couponCode: 'WELCOME10', updatedAt: new Date().toISOString() });
+
+  let saveCalls = 0;
+  const app = createTestApp({ db, saveDb: () => { saveCalls++; } });
+  const auth = createAuthHeader({ id: 'usr_customer', role: 'customer' });
+
+  await withServer(app, async (baseUrl) => {
+    const create = await jsonFetch(`${baseUrl}/api/orders`, {
+      method: 'POST',
+      headers: { Authorization: auth },
+      body: {
+        shippingAddress: { name: 'John Doe', city: 'Tashkent', address: 'Main st', phone: '+998901234567' },
+        paymentMethod: 'card'
+      }
+    });
+
+    assert.equal(create.status, 201);
+    assert.equal(create.json.couponCode, 'WELCOME10');
+    assert.equal(create.json.discount, 100);
+  });
+
+  assert.equal(db.coupons[0].usedCount, 1);
+  assert.equal(db.carts[0].couponCode, null);
+  assert.equal(saveCalls, 1);
 });
 
 test('orders: insufficient stock fails gracefully and does not partially update state', async () => {

@@ -58,8 +58,6 @@ export default function Products() {
         const q = {};
         if (searchQ) q.search = searchQ;
         if (categoryQ) q.category = categoryQ;
-        if (minPrice) q.minPrice = minPrice;
-        if (maxPrice) q.maxPrice = maxPrice;
         const res = await api.get('/products/brands', { params: q });
         setBrands(Array.isArray(res.data) ? res.data : []);
       } catch {
@@ -68,7 +66,7 @@ export default function Products() {
     };
     fetchBrands();
     // Intentionally excludes `brandQ` so selecting a brand doesn't shrink the list.
-  }, [searchQ, categoryQ, minPrice, maxPrice]);
+  }, [searchQ, categoryQ]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -222,23 +220,21 @@ export default function Products() {
           </div>
 
           {/* Brands */}
-          {brands.length > 0 && (
-            <div className="mb-6">
-              <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3 block">Brand</label>
-              <div className="space-y-1">
-                <button onClick={() => updateParam('brand', '')}
-                  className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${!brandQ ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-neutral-600 hover:bg-neutral-50'}`}>
-                  All Brands
+          <div className="mb-6">
+            <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3 block">Brand</label>
+            <div className="space-y-1">
+              <button onClick={() => updateParam('brand', '')}
+                className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${!brandQ ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-neutral-600 hover:bg-neutral-50'}`}>
+                All Brands
+              </button>
+              {brands.map(b => (
+                <button key={b} onClick={() => updateParam('brand', b)}
+                  className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${brandQ === b ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-neutral-600 hover:bg-neutral-50'}`}>
+                  {b}
                 </button>
-                {brands.map(b => (
-                  <button key={b} onClick={() => updateParam('brand', b)}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${brandQ === b ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-neutral-600 hover:bg-neutral-50'}`}>
-                    {b}
-                  </button>
-                ))}
-              </div>
+              ))}
             </div>
-          )}
+          </div>
         </aside>
 
         {/* Filter overlay (mobile) */}

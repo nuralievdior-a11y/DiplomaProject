@@ -55,7 +55,8 @@ module.exports = (db, saveDb) => {
   });
 
   router.get('/brands', (req, res) => {
-    const products = applyProductFilters(db.products.filter(p => p.isActive), req.query);
+    const { minPrice, maxPrice, ...rest } = req.query || {};
+    const products = applyProductFilters(db.products.filter(p => p.isActive), rest);
     res.json([...new Set(products.map(p => p.brand).filter(Boolean))].sort());
   });
 

@@ -5,11 +5,10 @@ import { useCart } from '../context/CartContext';
 import toast from 'react-hot-toast';
 
 export default function Cart() {
-  const { cart, updateQuantity, removeFromCart, clearCart, applyCoupon, loading } = useCart();
+  const { cart, updateQuantity, removeFromCart, clearCart, applyCoupon, removeCoupon, loading } = useCart();
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
-  const [appliedCoupon, setAppliedCoupon] = useState(null);
 
   const handleQuantity = async (productId, newQty) => {
     if (newQty < 1) return;
@@ -24,11 +23,22 @@ export default function Cart() {
     if (!couponCode.trim()) return;
     setCouponLoading(true);
     try {
-      const res = await applyCoupon(couponCode.trim());
-      setAppliedCoupon(res);
+      await applyCoupon(couponCode.trim());
+      setCouponCode('');
       toast.success('Coupon applied!');
     } catch (err) {
       toast.error(err.response?.data?.error || 'Invalid coupon');
+    }
+    setCouponLoading(false);
+  };
+
+  const handleRemoveCoupon = async () => {
+    setCouponLoading(true);
+    try {
+      await removeCoupon();
+      toast.success('Coupon removed');
+    } catch {
+      toast.error('Failed to remove coupon');
     }
     setCouponLoading(false);
   };
@@ -170,7 +180,16 @@ export default function Cart() {
                   Apply
                 </button>
               </div>
-              <p className="text-xs text-neutral-400 mt-2">Try "WELCOME10" for 10% off</p>
+              {cart.couponCode ? (
+                <div className="mt-2 flex items-center justify-between gap-3">
+                  <p className="text-xs text-emerald-700">Applied: <span className="font-semibold">{cart.couponCode}</span></p>
+                  <button onClick={handleRemoveCoupon} disabled={couponLoading} className="text-xs font-semibold text-red-500 hover:text-red-600 disabled:opacity-50">
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <p className="text-xs text-neutral-400 mt-2">Try "WELCOME10" for 10% off</p>
+              )}
             </div>
 
             {/* Checkout button */}

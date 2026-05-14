@@ -53,6 +53,7 @@ export default function Checkout() {
         items: cart.items.map(i => ({ productId: i.productId, quantity: i.quantity })),
         shippingAddress: address,
         paymentMethod: payment,
+        couponCode: cart.couponCode || null,
       });
       setOrderSuccess(res.data);
       // Backend already clears cart during order creation, just refresh local state

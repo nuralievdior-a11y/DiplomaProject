@@ -5,6 +5,8 @@ const { authenticate, isAdmin } = require('../middleware/auth');
 module.exports = (db, saveDb) => {
   const router = express.Router();
 
+  const normalizeCouponCode = (code) => String(code || '').trim().toUpperCase();
+
   router.get('/', authenticate, (req, res) => {
     let orders = (req.user.role === 'admin' && req.query.all === 'true') ? [...db.orders] : db.orders.filter(o => o.userId === req.user.id);
     if (req.query.status) orders = orders.filter(o => o.status === req.query.status);
@@ -45,7 +47,7 @@ module.exports = (db, saveDb) => {
   });
 
   router.post('/', authenticate, async (req, res) => {
-    const { shippingAddress, paymentMethod, couponCode, payment } = req.body;
+    const { shippingAddress, paymentMethod, couponCode: couponCodeBody, payment } = req.body;
     if (!shippingAddress || !paymentMethod) return res.status(400).json({ error: 'Address and payment required.' });
     const cart = db.carts.find(c => c.userId === req.user.id);
     if (!cart || !cart.items.length) return res.status(400).json({ error: 'Cart is empty.' });
@@ -62,11 +64,18 @@ module.exports = (db, saveDb) => {
       return res.status(402).json({ error: 'Payment failed.' });
     }
 
+    const couponCode = normalizeCouponCode(couponCodeBody || cart.couponCode);
+
     let subtotal = orderItems.reduce((s, i) => s + i.price * i.quantity, 0), discount = 0;
     if (couponCode) {
-      const cpn = db.coupons.find(c => c.code === couponCode && c.isActive);
-      if (cpn && subtotal >= cpn.minOrder) {
-        discount = cpn.type === 'percentage' ? Math.min(subtotal * cpn.value / 100, cpn.maxDiscount) : Math.min(cpn.value, cpn.maxDiscount);
+      const cpn = db.coupons.find(c => normalizeCouponCode(c.code) === couponCode && c.isActive);
+      const expired = cpn ? (new Date(cpn.expiresAt) < new Date()) : false;
+      const limitReached = cpn ? (cpn.usedCount >= cpn.usageLimit) : false;
+      if (cpn && !expired && !limitReached && subtotal >= (cpn.minOrder || 0)) {
+        const cap = typeof cpn.maxDiscount === 'number' ? cpn.maxDiscount : Infinity;
+        discount = cpn.type === 'percentage'
+          ? Math.min(subtotal * cpn.value / 100, cap)
+          : Math.min(cpn.value, cap);
         cpn.usedCount++;
       }
     }
@@ -85,7 +94,11 @@ module.exports = (db, saveDb) => {
     };
 
     orderItems.forEach(i => { const pi = db.products.findIndex(p => p.id === i.productId); if (pi > -1) db.products[pi].stock -= i.quantity; });
-    const ci = db.carts.findIndex(c => c.userId === req.user.id); if (ci > -1) db.carts[ci].items = [];
+    const ci = db.carts.findIndex(c => c.userId === req.user.id);
+    if (ci > -1) {
+      db.carts[ci].items = [];
+      db.carts[ci].couponCode = null;
+    }
     db.orders.push(order);
     await saveDb();
     res.status(201).json(order);

@@ -7,13 +7,13 @@ export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  const [cart, setCart] = useState({ items: [], subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0, itemCount: 0 });
+  const [cart, setCart] = useState({ items: [], subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0, itemCount: 0, couponCode: null });
   const [loading, setLoading] = useState(false);
 
   const fetchCart = useCallback(async () => {
-    if (!isAuthenticated) { setCart({ items: [], subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0, itemCount: 0 }); return; }
+    if (!isAuthenticated) { setCart({ items: [], subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0, itemCount: 0, couponCode: null }); return; }
     setLoading(true);
-    try { const r = await api.get('/cart'); setCart({ discount: 0, ...r.data }); } catch { } finally { setLoading(false); }
+    try { const r = await api.get('/cart'); setCart(r.data); } catch { } finally { setLoading(false); }
   }, [isAuthenticated]);
 
   useEffect(() => { fetchCart(); }, [fetchCart]);
@@ -37,16 +37,23 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = async () => {
     await api.delete('/cart/clear');
-    setCart({ items: [], subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0, itemCount: 0 });
+    setCart({ items: [], subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0, itemCount: 0, couponCode: null });
   };
 
   const applyCoupon = async (code) => {
     const r = await api.post('/cart/coupon', { code });
+    setCart(r.data);
+    return r.data;
+  };
+
+  const removeCoupon = async () => {
+    const r = await api.delete('/cart/coupon');
+    setCart(r.data);
     return r.data;
   };
 
   return (
-    <CartContext.Provider value={{ cart, loading, addToCart, updateQuantity, removeFromCart, clearCart, applyCoupon, fetchCart }}>
+    <CartContext.Provider value={{ cart, loading, addToCart, updateQuantity, removeFromCart, clearCart, applyCoupon, removeCoupon, fetchCart }}>
       {children}
     </CartContext.Provider>
   );
