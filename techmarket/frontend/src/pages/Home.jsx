@@ -5,7 +5,7 @@ import api from '../api';
 import ProductCard from '../components/ProductCard';
 
 const heroSlides = [
-  { title: 'Future of Tech,', highlight: 'Delivered Today', subtitle: 'Discover the latest smartphones, laptops, and gadgets with free express delivery on orders over $500.', cta: 'Shop Now', link: '/products', image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80', badge: 'New Arrivals 2025' },
+  { title: 'Future of Tech,', highlight: 'Delivered Today', subtitle: 'Discover the latest smartphones, laptops, and gadgets with free express delivery on orders over $500.', cta: 'Shop Now', link: '/products', image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80', badge: 'New Arrivals 2026' },
   { title: 'Premium Sound,', highlight: 'Pure Experience', subtitle: 'Immerse yourself in crystal-clear audio with our curated headphone collection from top brands.', cta: 'Explore Audio', link: '/products?category=cat_004', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80', badge: 'Best Sellers' },
   { title: 'Game Without', highlight: 'Limits', subtitle: 'Level up your setup with cutting-edge gaming gear — keyboards, monitors, consoles and more.', cta: 'Shop Gaming', link: '/products?category=cat_007', image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600&q=80', badge: 'Gaming Zone' }
 ];

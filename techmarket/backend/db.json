@@ -10,7 +10,7 @@
       "phone": "+998901234567",
       "avatar": "",
       "addresses": [],
-      "createdAt": "2025-01-01T00:00:00.000Z",
+      "createdAt": "2026-01-01T00:00:00.000Z",
       "isActive": true
     },
     {
@@ -34,7 +34,7 @@
           "isDefault": true
         }
       ],
-      "createdAt": "2025-01-15T10:30:00.000Z",
+      "createdAt": "2026-01-15T10:30:00.000Z",
       "isActive": true
     },
     {
@@ -58,7 +58,7 @@
           "isDefault": true
         }
       ],
-      "createdAt": "2025-02-01T08:00:00.000Z",
+      "createdAt": "2026-02-01T08:00:00.000Z",
       "isActive": true
     }
   ],
@@ -190,7 +190,7 @@
       "isFeatured": true,
       "isNew": true,
       "isActive": true,
-      "createdAt": "2025-01-10T00:00:00.000Z"
+      "createdAt": "2026-01-10T00:00:00.000Z"
     },
     {
       "id": "prod_002",
@@ -229,7 +229,7 @@
       "isFeatured": true,
       "isNew": true,
       "isActive": true,
-      "createdAt": "2025-01-12T00:00:00.000Z"
+      "createdAt": "2026-01-12T00:00:00.000Z"
     },
     {
       "id": "prod_003",
@@ -267,7 +267,7 @@
       "isFeatured": true,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-05T00:00:00.000Z"
+      "createdAt": "2026-01-05T00:00:00.000Z"
     },
     {
       "id": "prod_004",
@@ -304,7 +304,7 @@
       "isFeatured": true,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-08T00:00:00.000Z"
+      "createdAt": "2026-01-08T00:00:00.000Z"
     },
     {
       "id": "prod_005",
@@ -341,7 +341,7 @@
       "isFeatured": true,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-15T00:00:00.000Z"
+      "createdAt": "2026-01-15T00:00:00.000Z"
     },
     {
       "id": "prod_006",
@@ -379,7 +379,7 @@
       "isFeatured": true,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-03T00:00:00.000Z"
+      "createdAt": "2026-01-03T00:00:00.000Z"
     },
     {
       "id": "prod_007",
@@ -415,7 +415,7 @@
       "isFeatured": false,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-06T00:00:00.000Z"
+      "createdAt": "2026-01-06T00:00:00.000Z"
     },
     {
       "id": "prod_008",
@@ -452,7 +452,7 @@
       "isFeatured": false,
       "isNew": true,
       "isActive": true,
-      "createdAt": "2025-01-20T00:00:00.000Z"
+      "createdAt": "2026-01-20T00:00:00.000Z"
     },
     {
       "id": "prod_009",
@@ -489,7 +489,7 @@
       "isFeatured": false,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-04T00:00:00.000Z"
+      "createdAt": "2026-01-04T00:00:00.000Z"
     },
     {
       "id": "prod_010",
@@ -525,7 +525,7 @@
       "isFeatured": true,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-02T00:00:00.000Z"
+      "createdAt": "2026-01-02T00:00:00.000Z"
     },
     {
       "id": "prod_011",
@@ -560,7 +560,7 @@
       "isFeatured": false,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-07T00:00:00.000Z"
+      "createdAt": "2026-01-07T00:00:00.000Z"
     },
     {
       "id": "prod_012",
@@ -598,7 +598,7 @@
       "isFeatured": false,
       "isNew": true,
       "isActive": true,
-      "createdAt": "2025-01-18T00:00:00.000Z"
+      "createdAt": "2026-01-18T00:00:00.000Z"
     },
     {
       "id": "prod_013",
@@ -634,7 +634,7 @@
       "isFeatured": false,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-09T00:00:00.000Z"
+      "createdAt": "2026-01-09T00:00:00.000Z"
     },
     {
       "id": "prod_014",
@@ -670,7 +670,7 @@
       "isFeatured": false,
       "isNew": true,
       "isActive": true,
-      "createdAt": "2025-01-25T00:00:00.000Z"
+      "createdAt": "2026-01-25T00:00:00.000Z"
     },
     {
       "id": "prod_015",
@@ -707,7 +707,7 @@
       "isFeatured": false,
       "isNew": true,
       "isActive": true,
-      "createdAt": "2025-01-22T00:00:00.000Z"
+      "createdAt": "2026-01-22T00:00:00.000Z"
     },
     {
       "id": "prod_016",
@@ -744,7 +744,7 @@
       "isFeatured": false,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-16T00:00:00.000Z"
+      "createdAt": "2026-01-16T00:00:00.000Z"
     },
     {
       "id": "prod_017",
@@ -780,7 +780,7 @@
       "isFeatured": false,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-11T00:00:00.000Z"
+      "createdAt": "2026-01-11T00:00:00.000Z"
     },
     {
       "id": "prod_018",
@@ -815,7 +815,7 @@
       "isFeatured": false,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-17T00:00:00.000Z"
+      "createdAt": "2026-01-17T00:00:00.000Z"
     },
     {
       "id": "prod_019",
@@ -851,7 +851,7 @@
       "isFeatured": false,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-13T00:00:00.000Z"
+      "createdAt": "2026-01-13T00:00:00.000Z"
     },
     {
       "id": "prod_020",
@@ -886,7 +886,7 @@
       "isFeatured": false,
       "isNew": false,
       "isActive": true,
-      "createdAt": "2025-01-14T00:00:00.000Z"
+      "createdAt": "2026-01-14T00:00:00.000Z"
     }
   ],
   "carts": [
@@ -931,11 +931,11 @@
         "zipCode": "100000",
         "country": "Uzbekistan"
       },
-      "trackingNumber": "TM-2025-00001",
-      "estimatedDelivery": "2025-02-05T00:00:00.000Z",
-      "deliveredAt": "2025-02-04T14:30:00.000Z",
-      "createdAt": "2025-01-30T10:00:00.000Z",
-      "updatedAt": "2025-02-04T14:30:00.000Z"
+      "trackingNumber": "TM-2026-00001",
+      "estimatedDelivery": "2026-02-05T00:00:00.000Z",
+      "deliveredAt": "2026-02-04T14:30:00.000Z",
+      "createdAt": "2026-01-30T10:00:00.000Z",
+      "updatedAt": "2026-02-04T14:30:00.000Z"
     },
     {
       "id": "ord_002",
@@ -964,11 +964,11 @@
         "zipCode": "10001",
         "country": "USA"
       },
-      "trackingNumber": "TM-2025-00002",
-      "estimatedDelivery": "2025-02-20T00:00:00.000Z",
+      "trackingNumber": "TM-2026-00002",
+      "estimatedDelivery": "2026-02-20T00:00:00.000Z",
       "deliveredAt": null,
-      "createdAt": "2025-02-10T08:00:00.000Z",
-      "updatedAt": "2025-02-15T12:00:00.000Z"
+      "createdAt": "2026-02-10T08:00:00.000Z",
+      "updatedAt": "2026-02-15T12:00:00.000Z"
     },
     {
       "id": "ord_003",
@@ -1004,11 +1004,11 @@
         "zipCode": "100000",
         "country": "Uzbekistan"
       },
-      "trackingNumber": "TM-2025-00003",
-      "estimatedDelivery": "2025-02-25T00:00:00.000Z",
+      "trackingNumber": "TM-2026-00003",
+      "estimatedDelivery": "2026-02-25T00:00:00.000Z",
       "deliveredAt": null,
-      "createdAt": "2025-02-15T15:00:00.000Z",
-      "updatedAt": "2025-02-15T15:00:00.000Z"
+      "createdAt": "2026-02-15T15:00:00.000Z",
+      "updatedAt": "2026-02-15T15:00:00.000Z"
     }
   ],
   "reviews": [
@@ -1020,7 +1020,7 @@
       "rating": 5,
       "title": "Best iPhone ever!",
       "comment": "Amazing camera quality and the titanium design feels premium.",
-      "createdAt": "2025-02-05T10:00:00.000Z"
+      "createdAt": "2026-02-05T10:00:00.000Z"
     },
     {
       "id": "rev_002",
@@ -1030,7 +1030,7 @@
       "rating": 5,
       "title": "Incredible performance",
       "comment": "The M3 Max is a beast. Handles everything without breaking a sweat.",
-      "createdAt": "2025-02-12T14:00:00.000Z"
+      "createdAt": "2026-02-12T14:00:00.000Z"
     },
     {
       "id": "rev_003",
@@ -1040,7 +1040,7 @@
       "rating": 4,
       "title": "Great noise canceling",
       "comment": "Sound quality is superb and ANC is the best I've tried.",
-      "createdAt": "2025-02-06T09:30:00.000Z"
+      "createdAt": "2026-02-06T09:30:00.000Z"
     }
   ],
   "wishlist": [],
@@ -1055,7 +1055,7 @@
       "usageLimit": 100,
       "usedCount": 12,
       "isActive": true,
-      "expiresAt": "2025-12-31T23:59:59.000Z"
+      "expiresAt": "2026-12-31T23:59:59.000Z"
     },
     {
       "id": "cpn_002",
@@ -1067,7 +1067,7 @@
       "usageLimit": 50,
       "usedCount": 5,
       "isActive": true,
-      "expiresAt": "2025-06-30T23:59:59.000Z"
+      "expiresAt": "2026-06-30T23:59:59.000Z"
     },
     {
       "id": "cpn_003",
@@ -1079,7 +1079,7 @@
       "usageLimit": 200,
       "usedCount": 45,
       "isActive": true,
-      "expiresAt": "2025-12-31T23:59:59.000Z"
+      "expiresAt": "2026-12-31T23:59:59.000Z"
     }
   ],
   "settings": {
