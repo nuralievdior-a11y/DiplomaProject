@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, Eye, Package } from 'lucide-react';
+import { Eye, Package, ChevronDown } from 'lucide-react';
 import api from '../api';
 import toast from 'react-hot-toast';
 
@@ -42,9 +42,16 @@ export default function Orders() {
                   <td className="py-4 px-5 text-sm text-surface-200">{o.userName}</td>
                   <td className="py-4 px-5 text-sm font-bold text-white">${(o.total || 0).toFixed(2)}</td>
                   <td className="py-4 px-5">
-                    <select value={o.status} onChange={e => update(o.id, e.target.value)} className={`text-xs font-semibold px-2.5 py-1 rounded-full border-0 focus:outline-none cursor-pointer badge-${o.status}`}>
-                      {statuses.filter(s=>s!=='all').map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
+                    <div className="relative inline-flex items-center">
+                      <select
+                        value={o.status}
+                        onChange={e => update(o.id, e.target.value)}
+                        className="status-select capitalize"
+                      >
+                        {statuses.filter(s => s !== 'all').map(s => <option key={s} value={s} className="capitalize">{s}</option>)}
+                      </select>
+                      <ChevronDown className="pointer-events-none absolute right-2 w-4 h-4 text-amber-400" />
+                    </div>
                   </td>
                   <td className="py-4 px-5 text-sm text-surface-400">{new Date(o.createdAt).toLocaleDateString()}</td>
                   <td className="py-4 px-5"><Link to={`/orders/${o.id}`} className="p-2 text-surface-400 hover:text-primary-400 rounded-lg inline-flex"><Eye className="w-4 h-4"/></Link></td>
