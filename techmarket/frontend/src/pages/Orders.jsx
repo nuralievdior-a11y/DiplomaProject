@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { AlertTriangle, Package, ChevronRight, Truck, Check, Clock, XCircle, Search, ArrowLeft, ArrowRight } from 'lucide-react';
+import { AlertTriangle, Package, ChevronRight, Truck, Check, Clock, XCircle, Search, ArrowLeft, ArrowRight, ChevronDown, SlidersHorizontal } from 'lucide-react';
 import api from '../api';
 
 const statusConfig = {
@@ -114,20 +114,32 @@ export default function Orders() {
           </div>
 
           <div>
-            <select
-              value={status}
-              onChange={(e) => setParam({ status: e.target.value, page: 1 })}
-              className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl text-sm text-neutral-800 focus:outline-none focus:bg-white focus:border-brand-200 focus:ring-4 focus:ring-brand-500/10 transition-all"
-            >
-              <option value="">All statuses</option>
-              <option value="pending">Pending</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="processing">Processing</option>
-              <option value="shipped">Shipped</option>
-              <option value="delivered">Delivered</option>
-              <option value="delivery_issue">Delivery issue</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
+            <div className="relative group">
+              <SlidersHorizontal className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 group-focus-within:text-brand-500 transition-colors" />
+              <select
+                value={status}
+                onChange={(e) => setParam({ status: e.target.value, page: 1 })}
+                className={[
+                  'appearance-none w-full pl-11 pr-11 py-3',
+                  status ? 'bg-brand-50 border border-brand-200' : 'bg-neutral-50 border border-neutral-200',
+                  'rounded-2xl',
+                  'text-sm focus:outline-none focus:bg-white focus:border-brand-200 focus:ring-4 focus:ring-brand-500/10 transition-all',
+                  status ? 'hover:bg-brand-50 hover:border-brand-300' : 'hover:bg-white hover:border-neutral-300',
+                  'cursor-pointer',
+                  status ? 'text-neutral-800' : 'text-neutral-500'
+                ].join(' ')}
+              >
+                <option value="">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="delivery_issue">Delivery issue</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 group-focus-within:text-brand-500 transition-colors" />
+            </div>
           </div>
         </div>
 
