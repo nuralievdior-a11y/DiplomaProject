@@ -36,10 +36,6 @@ export default function Header() {
   return (
     <>
       <header className={`sticky top-0 z-[60] transition-all duration-300 ${scrolled ? 'bg-white shadow-sm shadow-neutral-200/50' : isHome ? 'bg-transparent' : 'bg-white'}`}>
-        {/* Top bar */}
-        <div className={`text-center py-2 text-xs font-medium tracking-wide transition-all ${scrolled ? 'h-0 overflow-hidden py-0 opacity-0' : 'bg-neutral-900 text-neutral-300'}`}>
-          Free Shipping on orders over $500 — Use code <span className="text-brand-400 font-bold">WELCOME10</span> for 10% off
-        </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
