@@ -4,6 +4,10 @@ const express = require('express');
 
 const aiRoutes = require('../routes/ai');
 
+// Capture the native fetch so tests can mock `global.fetch` for upstream calls
+// while still being able to call the local Express test server.
+const nativeFetch = global.fetch;
+
 const createTestApp = ({ db }) => {
   const app = express();
   app.use(express.json());
@@ -25,15 +29,25 @@ const withServer = async (app, fn) => {
 };
 
 const jsonFetch = async (url, { method = 'GET', headers = {}, body } = {}) => {
-  const res = await fetch(url, {
+  const res = await nativeFetch(url, {
     method,
     headers: { ...headers, ...(body ? { 'Content-Type': 'application/json' } : {}) },
     body: body ? JSON.stringify(body) : undefined
   });
-  const text = await res.text();
-  let json;
-  try { json = text ? JSON.parse(text) : null; } catch { json = text; }
-  return { status: res.status, json };
+
+  // Support mocked fetch responses that implement only `json()` (no `text()`).
+  if (typeof res.text === 'function') {
+    const text = await res.text();
+    let json;
+    try { json = text ? JSON.parse(text) : null; } catch { json = text; }
+    return { status: res.status, json };
+  }
+
+  if (typeof res.json === 'function') {
+    return { status: res.status, json: await res.json() };
+  }
+
+  return { status: res.status, json: null };
 };
 
 const createBaseDb = () => ({
