@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, Package, ShoppingCart, Users, Tag, Ticket, Settings, LogOut, Zap, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, Tag, Ticket, Settings, LogOut, Zap, ChevronRight, X } from 'lucide-react';
 
 const nav = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -12,12 +12,24 @@ const nav = [
   { path: '/settings', label: 'Settings', icon: Settings },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ open = false, onClose }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-surface-950 border-r border-surface-700/50 flex flex-col z-50">
-      <div className="p-6 border-b border-surface-700/50">
+    <>
+      {/* Backdrop (mobile) */}
+      <button
+        type="button"
+        aria-label="Close sidebar"
+        onClick={() => onClose?.()}
+        className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden ${open ? 'block' : 'hidden'}`}
+      />
+
+      <aside
+        className={`fixed left-0 top-0 h-full w-64 bg-surface-950 border-r border-surface-700/50 flex flex-col z-50 transform transition-transform duration-300
+        ${open ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+      >
+      <div className="p-6 border-b border-surface-700/50 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-lg shadow-primary-500/20">
             <Zap className="w-5 h-5 text-white" />
@@ -27,10 +39,19 @@ export default function Sidebar() {
             <p className="text-[11px] text-surface-400 font-medium tracking-wider uppercase">Admin Panel</p>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={() => onClose?.()}
+          className="lg:hidden p-2 rounded-xl text-surface-300 hover:text-white hover:bg-surface-800/60 transition-all"
+          aria-label="Close menu"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
       <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
         {nav.map(item => (
           <NavLink key={item.path} to={item.path} end={item.path === '/'}
+            onClick={() => onClose?.()}
             className={({ isActive }) => `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group ${isActive ? 'bg-primary-500/10 text-primary-400' : 'text-surface-400 hover:text-surface-200 hover:bg-surface-800/50'}`}>
             <item.icon className="w-[18px] h-[18px]" />
             <span className="flex-1">{item.label}</span>
@@ -53,5 +74,6 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
+    </>
   );
 }

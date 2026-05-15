@@ -44,7 +44,8 @@ export default function Products() {
       </div>
       {loading ? <div className="flex justify-center py-20"><div className="w-10 h-10 border-4 border-primary-500/30 border-t-primary-500 rounded-full animate-spin"/></div> : (
         <div className="glass rounded-2xl overflow-hidden">
-          <table className="w-full">
+          <div className="overflow-x-auto">
+          <table className="min-w-[980px] w-full">
             <thead><tr className="border-b border-surface-700/50 bg-surface-800/30">
               {['Product','Category','Price','Stock','Rating','Actions'].map(h => <th key={h} className={`text-${h==='Actions'?'right':'left'} text-xs font-medium text-surface-400 uppercase py-4 px-5`}>{h}</th>)}
             </tr></thead>
@@ -67,6 +68,7 @@ export default function Products() {
               })}
             </tbody>
           </table>
+          </div>
           {pagination.totalPages > 1 && <div className="flex items-center justify-between px-5 py-4 border-t border-surface-700/50"><p className="text-sm text-surface-400">Page {pagination.page} of {pagination.totalPages}</p><div className="flex gap-2"><button onClick={() => fetchProducts(pagination.page-1)} disabled={!pagination.hasPrev} className="px-4 py-2 text-sm bg-surface-700/50 text-surface-200 rounded-lg disabled:opacity-30">Prev</button><button onClick={() => fetchProducts(pagination.page+1)} disabled={!pagination.hasNext} className="px-4 py-2 text-sm bg-surface-700/50 text-surface-200 rounded-lg disabled:opacity-30">Next</button></div></div>}
         </div>
       )}

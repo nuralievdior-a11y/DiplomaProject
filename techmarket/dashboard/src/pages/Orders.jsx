@@ -31,7 +31,8 @@ export default function Orders() {
       </div>
       {loading ? <div className="flex justify-center py-20"><div className="w-10 h-10 border-4 border-primary-500/30 border-t-primary-500 rounded-full animate-spin"/></div> : !orders.length ? <div className="glass rounded-2xl p-12 text-center"><Package className="w-12 h-12 text-surface-500 mx-auto mb-3"/><p className="text-surface-400">No orders found</p></div> : (
         <div className="glass rounded-2xl overflow-hidden">
-          <table className="w-full">
+          <div className="overflow-x-auto">
+          <table className="min-w-[900px] w-full">
             <thead><tr className="border-b border-surface-700/50 bg-surface-800/30">
               {['Order','Customer','Total','Status','Date',''].map(h => <th key={h} className="text-left text-xs font-medium text-surface-400 uppercase py-4 px-5">{h}</th>)}
             </tr></thead>
@@ -52,6 +53,7 @@ export default function Orders() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

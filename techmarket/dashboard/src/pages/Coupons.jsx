@@ -34,7 +34,9 @@ export default function Coupons() {
           <button onClick={add} className="px-5 py-2.5 bg-primary-600 text-white text-sm font-semibold rounded-xl">Create</button>
         </div>
       </div>}
-      <div className="glass rounded-2xl overflow-hidden"><table className="w-full"><thead><tr className="border-b border-surface-700/50 bg-surface-800/30">
+      <div className="glass rounded-2xl overflow-hidden">
+      <div className="overflow-x-auto">
+      <table className="min-w-[980px] w-full"><thead><tr className="border-b border-surface-700/50 bg-surface-800/30">
         {['Code','Type','Value','Min Order','Max Disc','Used/Limit','Expires',''].map(h => <th key={h} className="text-left text-xs font-medium text-surface-400 uppercase py-4 px-5">{h}</th>)}
       </tr></thead><tbody className="divide-y divide-surface-700/30">
         {coupons.map(c => <tr key={c.id} className="hover:bg-surface-800/20">
@@ -48,6 +50,7 @@ export default function Coupons() {
           <td className="py-4 px-5"><button onClick={()=>del(c.id)} className="p-2 text-surface-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg"><Trash2 className="w-4 h-4"/></button></td>
         </tr>)}
       </tbody></table></div>
+      </div>
     </div>
   );
 }
