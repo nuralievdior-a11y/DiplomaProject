@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
+import OrderDetail from './pages/OrderDetail';
 import Wishlist from './pages/Wishlist';
 import ScrollToTop from './components/ScrollToTop';
 import ChatWidget from './components/ChatWidget';
@@ -40,6 +41,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Protected><Profile /></Protected>} />
             <Route path="/orders" element={<Protected><Orders /></Protected>} />
+            <Route path="/orders/:id" element={<Protected><OrderDetail /></Protected>} />
             <Route path="/wishlist" element={<Protected><Wishlist /></Protected>} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

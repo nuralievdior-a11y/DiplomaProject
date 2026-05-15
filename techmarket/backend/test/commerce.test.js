@@ -342,3 +342,165 @@ test('orders: delivery issue status requires reason and persists user-friendly d
   assert.equal(db.orders[0].deliveryIssue.reason, 'Courier reported damaged package.');
 });
 
+test('orders: customer can view order history (own orders only) with statuses', async () => {
+  const db = createBaseDb();
+  db.users.push({ id: 'usr_other', firstName: 'Jane', lastName: 'Roe', email: 'jane@example.com', password: 'x', role: 'customer', isActive: true });
+
+  const now = Date.now();
+  db.orders.push(
+    {
+      id: 'ord_old',
+      userId: 'usr_customer',
+      items: [{ productId: 'prod_1', name: 'Laptop', price: 1000, quantity: 1, image: 'img.png' }],
+      subtotal: 1000, discount: 0, shipping: 0, tax: 100, total: 1100,
+      status: 'pending',
+      paymentMethod: 'card',
+      paymentStatus: 'paid',
+      shippingAddress: { name: 'John Doe' },
+      trackingNumber: 'TM-2026-00001',
+      estimatedDelivery: new Date(now + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      deliveredAt: null,
+      couponCode: null,
+      createdAt: new Date(now - 2 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(now - 2 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: 'ord_new',
+      userId: 'usr_customer',
+      items: [{ productId: 'prod_1', name: 'Laptop', price: 1000, quantity: 2, image: 'img.png' }],
+      subtotal: 2000, discount: 0, shipping: 0, tax: 200, total: 2200,
+      status: 'delivered',
+      paymentMethod: 'card',
+      paymentStatus: 'paid',
+      shippingAddress: { name: 'John Doe' },
+      trackingNumber: 'TM-2026-00002',
+      estimatedDelivery: new Date(now + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      deliveredAt: new Date(now - 30 * 60 * 1000).toISOString(),
+      couponCode: null,
+      createdAt: new Date(now - 1 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(now - 30 * 60 * 1000).toISOString()
+    },
+    {
+      id: 'ord_other',
+      userId: 'usr_other',
+      items: [],
+      subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0,
+      status: 'processing',
+      paymentMethod: 'card',
+      paymentStatus: 'paid',
+      shippingAddress: { name: 'Jane Roe' },
+      trackingNumber: 'TM-2026-00003',
+      estimatedDelivery: new Date(now + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      deliveredAt: null,
+      couponCode: null,
+      createdAt: new Date(now - 3 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(now - 3 * 60 * 60 * 1000).toISOString()
+    }
+  );
+
+  const app = createTestApp({ db, saveDb: () => {} });
+  const auth = createAuthHeader({ id: 'usr_customer', role: 'customer' });
+
+  await withServer(app, async (baseUrl) => {
+    const list = await jsonFetch(`${baseUrl}/api/orders`, {
+      headers: { Authorization: auth }
+    });
+
+    assert.equal(list.status, 200);
+    assert.equal(list.json.orders.length, 2);
+    assert.deepEqual(list.json.orders.map(o => o.id), ['ord_new', 'ord_old']);
+    assert.equal(list.json.orders[0].status, 'delivered');
+    assert.equal(list.json.orders[1].status, 'pending');
+    assert.equal(list.json.pagination.total, 2);
+
+    const deliveredOnly = await jsonFetch(`${baseUrl}/api/orders?status=delivered`, {
+      headers: { Authorization: auth }
+    });
+    assert.equal(deliveredOnly.status, 200);
+    assert.equal(deliveredOnly.json.orders.length, 1);
+    assert.equal(deliveredOnly.json.orders[0].id, 'ord_new');
+  });
+});
+
+test('orders: customer can view order details, but cannot access others', async () => {
+  const db = createBaseDb();
+  db.users.push({ id: 'usr_other', firstName: 'Jane', lastName: 'Roe', email: 'jane@example.com', password: 'x', role: 'customer', isActive: true });
+
+  db.orders.push(
+    {
+      id: 'ord_mine',
+      userId: 'usr_customer',
+      items: [{ productId: 'prod_1', name: 'Laptop', price: 1000, quantity: 1, image: 'img.png' }],
+      subtotal: 1000, discount: 0, shipping: 0, tax: 100, total: 1100,
+      status: 'shipped',
+      paymentMethod: 'card',
+      paymentStatus: 'paid',
+      shippingAddress: { name: 'John Doe' },
+      trackingNumber: 'TM-2026-00010',
+      estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      deliveredAt: null,
+      couponCode: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    {
+      id: 'ord_theirs',
+      userId: 'usr_other',
+      items: [],
+      subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0,
+      status: 'pending',
+      paymentMethod: 'card',
+      paymentStatus: 'paid',
+      shippingAddress: { name: 'Jane Roe' },
+      trackingNumber: 'TM-2026-00011',
+      estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      deliveredAt: null,
+      couponCode: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+  );
+
+  const app = createTestApp({ db, saveDb: () => {} });
+  const auth = createAuthHeader({ id: 'usr_customer', role: 'customer' });
+
+  await withServer(app, async (baseUrl) => {
+    const mine = await jsonFetch(`${baseUrl}/api/orders/ord_mine`, {
+      headers: { Authorization: auth }
+    });
+    assert.equal(mine.status, 200);
+    assert.equal(mine.json.id, 'ord_mine');
+    assert.equal(mine.json.status, 'shipped');
+    assert.equal(mine.json.userName, 'John Doe');
+    assert.equal(mine.json.items.length, 1);
+
+    const theirs = await jsonFetch(`${baseUrl}/api/orders/ord_theirs`, {
+      headers: { Authorization: auth }
+    });
+    assert.equal(theirs.status, 403);
+    assert.equal(theirs.json.error, 'Access denied.');
+  });
+});
+
+test('orders: admin can list all orders with all=true (order history across users)', async () => {
+  const db = createBaseDb();
+  db.users.push({ id: 'usr_other', firstName: 'Jane', lastName: 'Roe', email: 'jane@example.com', password: 'x', role: 'customer', isActive: true });
+  db.orders.push(
+    { id: 'ord_a', userId: 'usr_customer', items: [], subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0, status: 'pending', paymentMethod: 'card', paymentStatus: 'paid', shippingAddress: { name: 'John Doe' }, trackingNumber: 'TM-2026-00100', estimatedDelivery: new Date().toISOString(), deliveredAt: null, couponCode: null, createdAt: new Date(Date.now() - 1000).toISOString(), updatedAt: new Date(Date.now() - 1000).toISOString() },
+    { id: 'ord_b', userId: 'usr_other', items: [], subtotal: 0, discount: 0, shipping: 0, tax: 0, total: 0, status: 'processing', paymentMethod: 'card', paymentStatus: 'paid', shippingAddress: { name: 'Jane Roe' }, trackingNumber: 'TM-2026-00101', estimatedDelivery: new Date().toISOString(), deliveredAt: null, couponCode: null, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+  );
+
+  const app = createTestApp({ db, saveDb: () => {} });
+  const adminAuth = createAuthHeader({ id: 'usr_admin', role: 'admin' });
+
+  await withServer(app, async (baseUrl) => {
+    const list = await jsonFetch(`${baseUrl}/api/orders?all=true`, {
+      headers: { Authorization: adminAuth }
+    });
+
+    assert.equal(list.status, 200);
+    assert.equal(list.json.orders.length, 2);
+    assert.equal(list.json.pagination.total, 2);
+  });
+});
+
